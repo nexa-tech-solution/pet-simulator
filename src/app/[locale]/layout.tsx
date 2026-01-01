@@ -1,4 +1,7 @@
 import { routing } from '@/i18n/routing';
+import MantineProvider from '@/providers/MantineProvider';
+import '@mantine/core/styles.css';
+import '@mantine/core/styles.layer.css';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
@@ -14,5 +17,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
   // Enable static rendering
   setRequestLocale(locale);
 
-  return <NextIntlClientProvider>{children}</NextIntlClientProvider>;
+  return (
+    <NextIntlClientProvider>
+      <MantineProvider>{children}</MantineProvider>
+    </NextIntlClientProvider>
+  );
 }
