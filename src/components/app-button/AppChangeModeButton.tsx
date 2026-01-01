@@ -3,6 +3,7 @@
 import { isLightMode } from '@/store/theme.store';
 import { useAtom } from 'jotai';
 import { Cloud, Moon, Star, Sun } from 'lucide-react';
+import { useLayoutEffect } from 'react';
 
 export const AppChangeModeButton = () => {
   const [lightMode, setLightMode] = useAtom(isLightMode);
@@ -12,14 +13,20 @@ export const AppChangeModeButton = () => {
     setLightMode(next);
 
     // Update <html> class for Tailwind
-    if (next) document.documentElement.classList.remove('dark');
-    else document.documentElement.classList.add('dark');
+    // if (next) document.documentElement.classList.remove('dark');
+    // else document.documentElement.classList.add('dark');
   };
+
+  // EFFECT
+  useLayoutEffect(() => {
+    if (lightMode) document.documentElement.classList.remove('dark');
+    else document.documentElement.classList.add('dark');
+  }, [lightMode]);
 
   return (
     <button
       onClick={handleToggle}
-      className={`relative w-16 h-9 rounded-full p-1 transition-all duration-500 shadow-inner ${lightMode ? 'bg-sky-200' : 'bg-slate-800'}`}
+      className={`relative cursor-pointer w-16 h-9 rounded-full p-1 transition-all duration-500 shadow-inner ${lightMode ? 'bg-sky-200' : 'bg-slate-800'}`}
     >
       {/* Background Icons */}
       <div className='absolute inset-0 flex justify-between items-center px-2 opacity-50'>
