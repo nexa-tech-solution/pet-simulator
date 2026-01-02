@@ -15,7 +15,7 @@ export const AppActionButton = ({ onClick, icon: Icon, label, color, disabled, i
     onClick={(e) => onClick(e)}
     disabled={disabled}
     className={`
-      relative group overflow-hidden cursor-pointer
+      relative group overflow-hidden
       flex flex-col items-center justify-center 
       transition-all duration-200 active:scale-95 active:shadow-inner
       ${
@@ -27,9 +27,9 @@ export const AppActionButton = ({ onClick, icon: Icon, label, color, disabled, i
         disabled
           ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-600'
           : isSecondary
-            ? 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300'
+            ? 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 cursor-pointer'
             : isFab
-              ? 'bg-white/90 backdrop-blur-md border-2 border-white dark:bg-slate-700/90 dark:border-slate-600 dark:text-white shadow-2xl' // Improved FAB contrast
+              ? 'bg-white/90 backdrop-blur-md border-2 border-white dark:bg-slate-700/90 dark:border-slate-600 dark:text-white shadow-2xl cursor-pointer' // Improved FAB contrast
               : 'bg-white border-gray-100 hover:shadow-lg text-gray-700 dark:bg-gray-800 dark:text-white dark:border-gray-900 shadow-md'
       }
       ${!isFab && !disabled && !isSecondary ? 'hover:-translate-y-1 hover:border-b-8' : ''} 

@@ -16,7 +16,7 @@ export const AppProgressBar = ({ value, max, color, icon: Icon, label }: AppProg
 
   return (
     <div className='flex flex-col gap-1 w-full group'>
-      <div className='flex justify-between text-xs font-bold text-gray-600 dark:text-gray-300 px-1 uppercase tracking-wider drop-shadow-sm'>
+      <div className='flex justify-between text-xs font-bold text-gray-600 dark:text-gray-300 group-data-[sleep=true]:text-gray-300 px-1 uppercase tracking-wider drop-shadow-sm'>
         <span className='flex items-center gap-1.5'>
           <Icon size={12} className={color} /> {label}
         </span>
