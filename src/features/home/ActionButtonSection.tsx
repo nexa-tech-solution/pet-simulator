@@ -4,8 +4,10 @@ import { AppActionButton } from '@/components/app-action-button/AppActionButton'
 import { feedbacks, isSleeping, stats } from '@/store/pet.store';
 import { useAtom } from 'jotai';
 import { Gamepad2, MessageCircle, Moon, Sun, Utensils } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export const ActionButtonSection = () => {
+  const router = useRouter();
   // STORE
   const [isSleepingAtom, setIsSleepingAtom] = useAtom(isSleeping);
   const [statsAtom, setStatsAtom] = useAtom(stats);
@@ -102,7 +104,9 @@ export const ActionButtonSection = () => {
       />
       <AppActionButton
         isFab={true}
-        onClick={() => {}}
+        onClick={() => {
+          router.push('/chat');
+        }}
         icon={MessageCircle}
         label='Talk'
         color='text-blue-500 bg-blue-500'

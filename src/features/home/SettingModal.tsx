@@ -24,7 +24,7 @@ export const SettingModal = () => {
       </button>
 
       {isOpen && (
-        <div className='fixed inset-0 z-50 flex items-end md:justify-end bg-slate-900/20 backdrop-blur-sm' onClick={() => setIsOpen(false)}>
+        <div className='fixed inset-0 z-50 flex items-end md:justify-end bg-slate-900/20 backdrop-blur-sm'>
           <div className='overflow-y-auto bg-white dark:bg-slate-800 w-full md:w-[50%] h-[60%] md:h-full rounded-t-2xl md:rounded-t-none md:rounded-l-2xl p-6 animate-[slideUp_0.4s_cubic-bezier(0.16,1,0.3,1)] md:animate-[slideInRight_0.4s_cubic-bezier(0.16,1,0.3,1)] shadow-2xl flex flex-col'>
             <div className='flex justify-between items-center mb-8 px-2'>
               <div>

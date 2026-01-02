@@ -26,10 +26,10 @@ export const PetSelector = () => {
               onClick={() => setCurrentPetAtom(petEnum)}
               className={`cursor-pointer flex flex-col items-center justify-center p-2 rounded-xl border-2 transition-all ${currentPetAtom === petEnum ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300' : 'border-transparent bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400'}`}
             >
-              {pet.imageType === 'rive' ? (
-                <Rive src={pet.imageUrl} stateMachines={pet.stateMachines} className='w-20 h-20 md:w-30 md:h-30 lg:w-30 lg:h-30' />
+              {pet?.wakeup?.imageType === 'rive' ? (
+                <Rive src={pet.wakeup.imageUrl} stateMachines={pet.wakeup.stateMachines} className='w-20 h-20 md:w-30 md:h-30 lg:w-30 lg:h-30' />
               ) : (
-                <Lottie animationData={pet.imageUrl} className='w-20 h-20 md:w-30 md:h-30 lg:w-30 lg:h-30' />
+                <Lottie animationData={pet?.wakeup?.imageUrl} className='w-20 h-20 md:w-30 md:h-30 lg:w-30 lg:h-30' />
               )}
               <span className='text-[10px] font-bold uppercase mt-1'>{pet.name}</span>
             </button>

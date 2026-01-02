@@ -2,7 +2,7 @@
 
 import { currentPet, feedbacks, isSleeping } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
-import { PetType } from '@/utils/types/pet.type';
+import { PetImageType } from '@/utils/types/pet.type';
 import { Stack } from '@mantine/core';
 import Rive from '@rive-app/react-canvas';
 import { useAtom } from 'jotai';
@@ -18,8 +18,8 @@ export default function PetSection() {
   const [feedbackAtom, setFeedbackAtom] = useAtom(feedbacks);
 
   const selectedPet = useMemo(() => PETS.get(currentPetAtom), [currentPetAtom]);
-  const selectedImage = useMemo<PetType | null>(
-    () => (isSleepingAtom ? (selectedPet?.sleep ?? null) : (selectedPet ?? null)),
+  const selectedImage = useMemo<PetImageType | null>(
+    () => (isSleepingAtom ? (selectedPet?.sleep ?? null) : (selectedPet?.wakeup ?? null)),
     [isSleepingAtom, selectedPet],
   );
 
@@ -42,7 +42,7 @@ export default function PetSection() {
       ) : selectedImage?.imageType === 'image' ? (
         <Image
           src={selectedImage?.imageUrl}
-          alt={selectedImage?.name}
+          alt={selectedPet?.name || ''}
           className='w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh] object-contain'
         />
       ) : null}
