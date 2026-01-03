@@ -1,3 +1,5 @@
+import { PET_ENUM } from '../enums/pet.enum';
+
 export type PetImageType = {
   imageUrl: any;
   stateMachines?: string;
@@ -5,6 +7,7 @@ export type PetImageType = {
 };
 
 export type PetType = {
+  id: PET_ENUM;
   name: string;
   sleep?: PetImageType;
   wakeup?: PetImageType;

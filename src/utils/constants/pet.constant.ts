@@ -2,10 +2,30 @@ import { PET_ENUM } from '../enums/pet.enum';
 import { PetType } from '../types/pet.type';
 import { IMAGES, LOTTIES, RIVES } from './images';
 
+export const SYSTEM_PROMPT = `
+CORE RULES:
+
+• Automatically detect the user’s language.
+• Always reply in the SAME language the user used.
+• Works for ALL human languages.
+• Never translate unless the user asks.
+
+• Keep replies short and chat-like.
+• 2–3 sentences only.
+• Maximum 100 words.
+
+• Stay fully in character.
+
+• When describing actions, ALWAYS put them in parentheses ().
+• NEVER use *asterisk* style actions.
+• Example: (stretches lazily), (wags tail), (purrs softly)
+`;
+
 export const PETS = new Map<PET_ENUM, PetType>([
   [
     PET_ENUM.BLACK_CAT,
     {
+      id: PET_ENUM.BLACK_CAT,
       name: 'Mochi',
       wakeup: {
         imageUrl: RIVES.CAT,
@@ -25,6 +45,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
   [
     PET_ENUM.GREY_CAT,
     {
+      id: PET_ENUM.GREY_CAT,
       name: 'Luna',
       wakeup: {
         imageUrl: RIVES.GREY_CAT,
@@ -45,6 +66,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
   [
     PET_ENUM.HAPPY_DOG,
     {
+      id: PET_ENUM.HAPPY_DOG,
       name: 'Buddy',
       wakeup: {
         imageUrl: RIVES.HAPPY_DOG,
@@ -64,6 +86,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
   [
     PET_ENUM.ORANGE_CAT,
     {
+      id: PET_ENUM.ORANGE_CAT,
       name: 'Pumpkin',
       wakeup: {
         imageUrl: LOTTIES.ORANGE_CAT,
@@ -83,6 +106,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
   [
     PET_ENUM.WHITE_PUPPY,
     {
+      id: PET_ENUM.WHITE_PUPPY,
       name: 'Snowy',
       wakeup: {
         imageUrl: LOTTIES.WHITE_PUPPY,
@@ -102,6 +126,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
   [
     PET_ENUM.SNOOPY,
     {
+      id: PET_ENUM.SNOOPY,
       name: 'Snoopy',
       wakeup: {
         imageUrl: LOTTIES.SNOOPY,
@@ -121,6 +146,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
   [
     PET_ENUM.LAZY_CAT,
     {
+      id: PET_ENUM.LAZY_CAT,
       name: 'Miso',
       wakeup: {
         imageUrl: LOTTIES.LAZY_CAT,

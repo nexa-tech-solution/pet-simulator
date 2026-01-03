@@ -1,5 +1,6 @@
 'use client';
 
+import { petChatService } from '@/services/geminiService';
 import { currentPet } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { MessageType } from '@/utils/types/message.type';
@@ -7,22 +8,17 @@ import Rive from '@rive-app/react-canvas';
 import { useAtom } from 'jotai';
 import Lottie from 'lottie-react';
 import { Send } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const ChatSection = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  // STORE
   const [currentPetAtom] = useAtom(currentPet);
-
-  // STATE
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
   const [messagesMap, setMessagesMap] = useState<Record<string, MessageType[]>>(() => {
-    // Initialize with greetings
     const initial: Record<string, MessageType[]> = {};
-    PETS?.entries().forEach(([id, pet]) => {
+    PETS.entries().forEach(([id, pet]) => {
       initial[id] = [
         {
           id: 'initial-' + id,
@@ -38,35 +34,79 @@ export const ChatSection = () => {
   const messages = useMemo(() => messagesMap[currentPetAtom] || [], [messagesMap, currentPetAtom]);
   const pet = useMemo(() => PETS.get(currentPetAtom)!, [currentPetAtom]);
 
-  // EFFECT
+  const handleSendMessage = useCallback(
+    async (text: string) => {
+      const userMsg: MessageType = {
+        id: Date.now().toString(),
+        role: 'user',
+        text,
+        timestamp: Date.now(),
+      };
+
+      setMessagesMap((prev) => ({
+        ...prev,
+        [pet.id]: [...(prev[pet.id] || []), userMsg],
+      }));
+
+      setIsTyping(true);
+
+      try {
+        const response = await petChatService.sendMessage(pet, text);
+        const petMsg: MessageType = {
+          id: (Date.now() + 1).toString(),
+          role: 'pet',
+          text: response,
+          timestamp: Date.now(),
+        };
+
+        setMessagesMap((prev) => ({
+          ...prev,
+          [pet.id]: [...(prev[pet.id] || []), petMsg],
+        }));
+      } finally {
+        setIsTyping(false);
+      }
+    },
+    [pet],
+  );
+
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isTyping]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputText.trim()) {
-      // onSendMessage(inputText);
+      handleSendMessage(inputText.trim());
       setInputText('');
     }
   };
 
   return (
-    <div className='w-[90%] max-w-4xl self-center flex flex-col h-full bg-white rounded-t-3xl shadow-xl overflow-hidden border border-gray-100'>
+    <div
+      className='w-[90%] max-w-4xl self-center flex flex-col h-[60vh]
+      bg-white dark:bg-zinc-900
+      rounded-t-3xl shadow-xl overflow-hidden
+      border border-gray-100 dark:border-zinc-800  transition-colors duration-1500 '
+    >
       {/* Header */}
-      <div className={`p-4 flex items-center gap-4 bg-blue-100 border-blue-300 text-blue-800 border-b`}>
+      <div
+        className='p-4 flex items-center gap-4
+        bg-blue-100 dark:bg-zinc-800
+        border-b border-blue-300 dark:border-zinc-700
+        text-blue-800 dark:text-zinc-100'
+      >
         {pet?.wakeup?.imageType === 'rive' ? (
           <Rive
             src={pet.wakeup.imageUrl}
             stateMachines={pet.wakeup.stateMachines}
-            className='w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm'
+            className='w-12 h-12 rounded-full border-2 border-white shadow-sm'
             key={currentPetAtom}
           />
         ) : (
-          <Lottie animationData={pet?.wakeup?.imageUrl} className='w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm' />
+          <Lottie animationData={pet?.wakeup?.imageUrl} className='w-12 h-12 rounded-full border-2 border-white shadow-sm' />
         )}
+
         <div>
           <h2 className='font-bold text-xl'>{pet.name}</h2>
           <p className='text-xs opacity-80'>{isTyping ? 'Thinking...' : 'Always happy to talk!'}</p>
@@ -74,46 +114,52 @@ export const ChatSection = () => {
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className='flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50'>
+      <div ref={scrollRef} className='flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-zinc-950'>
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`relative max-w-[80%] p-4 rounded-2xl shadow-sm text-sm md:text-base ${
+              className={`max-w-[80%] p-4 rounded-2xl shadow-sm text-sm md:text-base
+              ${
                 msg.role === 'user'
-                  ? 'bg-blue-500 text-white rounded-tr-none chat-bubble-user'
-                  : 'bg-white text-gray-800 rounded-tl-none border border-gray-100 chat-bubble-pet'
+                  ? 'bg-blue-500 dark:bg-blue-600 text-white rounded-tr-none'
+                  : 'bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-100 border border-gray-100 dark:border-zinc-700 rounded-tl-none'
               }`}
             >
               {msg.text}
             </div>
           </div>
         ))}
+
         {isTyping && (
           <div className='flex justify-start'>
-            <div className='bg-white p-4 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm flex gap-1'>
-              <span className='w-2 h-2 bg-gray-300 rounded-full animate-bounce'></span>
-              <span className='w-2 h-2 bg-gray-300 rounded-full animate-bounce delay-75'></span>
-              <span className='w-2 h-2 bg-gray-300 rounded-full animate-bounce delay-150'></span>
+            <div className='bg-white dark:bg-zinc-800 p-4 rounded-2xl rounded-tl-none border border-gray-100 dark:border-zinc-700 shadow-sm flex gap-1'>
+              <span className='w-2 h-2 bg-gray-300 dark:bg-zinc-500 rounded-full animate-bounce' />
+              <span className='w-2 h-2 bg-gray-300 dark:bg-zinc-500 rounded-full animate-bounce delay-75' />
+              <span className='w-2 h-2 bg-gray-300 dark:bg-zinc-500 rounded-full animate-bounce delay-150' />
             </div>
           </div>
         )}
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className='p-4 bg-white border-t border-gray-100 flex gap-2'>
+      <form onSubmit={handleSubmit} className='p-4 bg-white dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800 flex gap-2'>
         <input
-          type='text'
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={`Talk to ${pet.name}...`}
-          className='flex-1 px-4 py-3 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base transition-all'
+          className='flex-1 px-4 py-3 rounded-full
+            bg-white dark:bg-zinc-800
+            border border-gray-200 dark:border-zinc-700
+            text-gray-900 dark:text-zinc-100
+            placeholder:text-gray-400 dark:placeholder:text-zinc-400
+            focus:ring-2 focus:ring-blue-400 outline-none transition'
         />
         <button
           type='submit'
           disabled={!inputText.trim() || isTyping}
-          className='bg-blue-500 cursor-pointer hover:bg-blue-600 disabled:opacity-50 text-white w-12 h-12 rounded-full flex items-center justify-center transition-colors shadow-md'
+          className='bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50
+            text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition'
         >
-          {/* <i className='fas fa-paper-plane'></i> */}
           <Send />
         </button>
       </form>

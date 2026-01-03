@@ -30,3 +30,5 @@ package-lock.json
 # Next.js
 .next/
 out/
+
+.env
