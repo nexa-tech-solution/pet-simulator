@@ -61,7 +61,6 @@ export default async function HomePage() {
     group-data-[sleep=true]:via-indigo-950
     group-data-[sleep=true]:to-slate-900'
     >
-      {/* Day Mode: Moving Clouds */}
       <CloudSection />
       <HeaderSection />
       <PetSection />
