@@ -13,6 +13,12 @@ export const PetSelector = () => {
 
   const pets = useMemo(() => Array.from(PETS.entries()), []);
 
+  const forceTap = (fn: () => void) => (e: React.PointerEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    fn();
+  };
+
   return (
     <div className='bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700 p-4'>
       <h3 className='font-bold text-slate-800 dark:text-white mb-3 flex items-center gap-2'>
@@ -23,7 +29,7 @@ export const PetSelector = () => {
           return (
             <button
               key={petEnum}
-              onClick={() => setCurrentPetAtom(petEnum)}
+              onPointerDown={forceTap(() => setCurrentPetAtom(petEnum))}
               className={`cursor-pointer flex flex-col items-center justify-center p-2 rounded-xl border-2 transition-all ${currentPetAtom === petEnum ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300' : 'border-transparent bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400'}`}
             >
               {pet?.wakeup?.imageType === 'rive' ? (
