@@ -25,7 +25,11 @@ export const AppChangeModeButton = () => {
 
   return (
     <button
-      onClick={handleToggle}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleToggle();
+      }}
       className={`relative cursor-pointer w-16 h-9 rounded-full p-1 transition-all duration-500 shadow-inner ${lightMode ? 'bg-sky-200' : 'bg-slate-800'}`}
     >
       {/* Background Icons */}
