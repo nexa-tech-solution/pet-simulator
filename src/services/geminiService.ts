@@ -16,7 +16,8 @@ class PetChatService {
     if (!this.chats.has(pet.id)) {
       const chat = this.ai.chats.create({
         // model: 'gemini-3-flash-preview',
-        model: 'gemini-2.5-flash-lite',
+        //model: 'gemini-2.5-flash-lite',
+        model: 'gemini-flash-lite-latest',
         config: {
           systemInstruction: pet.personality + SYSTEM_PROMPT,
           temperature: 0.8,

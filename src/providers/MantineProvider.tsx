@@ -5,9 +5,9 @@ import React from 'react';
 
 const MantineProvider = ({ children }: { children: React.ReactNode }) => {
   const theme = createTheme({
-    fontFamily: 'Satoshi, sans-serif',
+    fontFamily: 'Noto Sans, sans-serif',
     headings: {
-      fontFamily: 'Satoshi, sans-serif',
+      fontFamily: 'Noto Sans, sans-serif',
     },
   });
 

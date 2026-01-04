@@ -11,7 +11,7 @@ export default async function ChatPage() {
         group-data-[sleep=true]:to-slate-900 relative'
     >
       <div className='sticky top-0 z-50'>
-        <HeaderSection />
+        <HeaderSection withBack />
         <ChatHeaderSection />
       </div>
       <ChatSection />
