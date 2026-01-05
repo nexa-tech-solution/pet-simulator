@@ -1,15 +1,17 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const withNextIntl = createNextIntlPlugin({
   experimental: {
-    optimisticClientCache: false,
-    ppr: false,
-    serverComponentsExternalPackages: [],
+    createMessagesDeclaration: './messages/en.json',
   },
+});
+
+const nextConfig: NextConfig = {
   reactStrictMode: false,
+
+  // Disable source maps in development to avoid Turbopack source map errors
+  productionBrowserSourceMaps: false,
 };
 
-const withNextIntl = createNextIntlPlugin();
 export default withNextIntl(nextConfig);
