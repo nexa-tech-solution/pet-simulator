@@ -18,7 +18,7 @@ CORE RULES:
 
 • When describing actions, ALWAYS put them in parentheses ().
 • NEVER use *asterisk* style actions.
-• Example: (stretches lazily), (wags tail), (purrs softly)
+• Example: (stretches lazily), (wags tail), (purrs softly).
 `;
 
 export const PETS = new Map<PET_ENUM, PetType>([

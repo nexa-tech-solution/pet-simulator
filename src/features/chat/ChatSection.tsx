@@ -1,7 +1,7 @@
 'use client';
 
 import { petChatService } from '@/services/geminiService';
-import { currentPet } from '@/store/pet.store';
+import { currentPet, stats } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { MessageType } from '@/utils/types/message.type';
 import Rive from '@rive-app/react-canvas';
@@ -15,6 +15,9 @@ export const ChatSection = () => {
   const [currentPetAtom] = useAtom(currentPet);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [shake, setShake] = useState(false);
+
+  const [statsAtom, setStatsAtom] = useAtom(stats);
 
   const [messagesMap, setMessagesMap] = useState<Record<string, MessageType[]>>(() => {
     const initial: Record<string, MessageType[]> = {};
@@ -33,6 +36,7 @@ export const ChatSection = () => {
 
   const messages = useMemo(() => messagesMap[currentPetAtom] || [], [messagesMap, currentPetAtom]);
   const pet = useMemo(() => PETS.get(currentPetAtom)!, [currentPetAtom]);
+  const canChat = useMemo(() => statsAtom.coins >= 50, [statsAtom]);
 
   const handleSendMessage = useCallback(
     async (text: string) => {
@@ -65,6 +69,10 @@ export const ChatSection = () => {
         }));
       } finally {
         setIsTyping(false);
+        setStatsAtom((prev) => ({
+          ...prev,
+          coins: prev.coins - 50,
+        }));
       }
     },
     [pet],
@@ -141,18 +149,32 @@ export const ChatSection = () => {
         )}
       </div>
 
+      {!canChat && (
+        <div
+          className='mb-2 px-4 py-2 text-xs rounded-xl
+    bg-yellow-100 dark:bg-yellow-900/30
+    text-yellow-700 dark:text-yellow-300 text-center'
+        >
+          You need at least 50 coins to chat with your pet 🪙
+        </div>
+      )}
+
       {/* Input */}
       <form onSubmit={handleSubmit} className='p-4 bg-white dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800 flex gap-2'>
         <input
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={`Talk to ${pet.name}...`}
-          className='flex-1 px-4 py-3 rounded-full
-            bg-white dark:bg-zinc-800
-            border border-gray-200 dark:border-zinc-700
-            text-gray-900 dark:text-zinc-100
-            placeholder:text-gray-400 dark:placeholder:text-zinc-400
-            focus:ring-2 focus:ring-blue-400 outline-none transition'
+          onClick={() => {
+            if (!canChat) {
+              setShake(true);
+              setTimeout(() => setShake(false), 400);
+            }
+          }}
+          className={`flex-1 px-4 py-3 rounded-full transition
+    ${shake ? 'animate-[shake_0.4s]' : ''}
+    ${!canChat ? 'opacity-50 cursor-not-allowed' : 'focus:ring-2 focus:ring-blue-400'}
+  `}
         />
         <button
           type='submit'

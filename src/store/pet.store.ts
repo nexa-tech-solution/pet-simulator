@@ -13,7 +13,7 @@ export const stats = atomWithStorage<StatisticsType>('stats', {
   happiness: 50,
   hunger: 50,
   energy: 50,
-  coins: 0,
+  coins: 200,
 });
 
 export const feedbacks = atom<FeedbackType[]>([]);
