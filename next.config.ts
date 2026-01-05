@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     ppr: false,
     serverComponentsExternalPackages: [],
   },
+  reactStrictMode: false,
 };
 
 const withNextIntl = createNextIntlPlugin();
