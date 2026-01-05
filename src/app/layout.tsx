@@ -1,4 +1,5 @@
 import AppMetaDataProvider from '@/providers/AppMetaDataProvider';
+import { ProgressBarProvider } from '@/providers/ProgressBarProvider';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -26,7 +27,7 @@ export default function RootLayout({
     <html lang='en' className='dark group' data-locator-target='vscode'>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AppMetaDataProvider />
-        {children}
+        <ProgressBarProvider>{children}</ProgressBarProvider>
       </body>
     </html>
   );
