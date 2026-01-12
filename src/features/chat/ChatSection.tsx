@@ -160,7 +160,7 @@ export const ChatSection = () => {
       )}
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className='p-4 bg-white dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800 flex gap-2'>
+      <form onSubmit={handleSubmit} className='p-4 bg-white dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800 flex gap-2 items-center'>
         <input
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
@@ -171,7 +171,7 @@ export const ChatSection = () => {
               setTimeout(() => setShake(false), 400);
             }
           }}
-          className={`flex-1 px-4 py-3 rounded-full transition
+          className={`flex-1 min-w-0 px-4 py-3 rounded-full transition
     ${shake ? 'animate-[shake_0.4s]' : ''}
     ${!canChat ? 'opacity-50 cursor-not-allowed' : 'focus:ring-2 focus:ring-blue-400'}
   `}
@@ -180,7 +180,7 @@ export const ChatSection = () => {
           type='submit'
           disabled={!inputText.trim() || isTyping}
           className='bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50
-            text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition shrink-0'
+            text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition flex-shrink-0'
         >
           <Send size={20} />
         </button>
