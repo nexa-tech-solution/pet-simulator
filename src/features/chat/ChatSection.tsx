@@ -180,9 +180,9 @@ export const ChatSection = () => {
           type='submit'
           disabled={!inputText.trim() || isTyping}
           className='bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50
-            text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition'
+            text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition shrink-0'
         >
-          <Send />
+          <Send size={20} />
         </button>
       </form>
     </div>
