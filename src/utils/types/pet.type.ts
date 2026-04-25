@@ -1,5 +1,7 @@
 import { PET_ENUM } from '../enums/pet.enum';
 
+export type PetIdType = PET_ENUM | string;
+
 export type PetImageType = {
   imageUrl: any;
   stateMachines?: string;
@@ -7,7 +9,7 @@ export type PetImageType = {
 };
 
 export type PetType = {
-  id: PET_ENUM;
+  id: PetIdType;
   name: string;
   sleep?: PetImageType;
   wakeup?: PetImageType;
@@ -22,6 +24,22 @@ export type StatisticsType = {
   energy: number;
   coins: number;
 };
+
+export type PetCustomizationType = {
+  name?: string;
+};
+
+export type PetProfilesType = Partial<Record<PetIdType, PetCustomizationType>>;
+
+export type CustomPetType = {
+  id: string;
+  name: string;
+  imageUrl: string;
+  personality?: string;
+  createdAt: number;
+};
+
+export type CustomPetsType = Record<string, CustomPetType>;
 
 export type FeedbackType = {
   id: number;

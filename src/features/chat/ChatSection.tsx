@@ -1,8 +1,9 @@
 'use client';
 
 import { petChatService } from '@/services/geminiService';
-import { currentPet, stats } from '@/store/pet.store';
+import { currentPet, customPets, petProfiles, stats } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
+import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
 import { MessageType } from '@/utils/types/message.type';
 import Rive from '@rive-app/react-canvas';
 import { useAtom } from 'jotai';
@@ -17,6 +18,8 @@ export const ChatSection = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [shake, setShake] = useState(false);
 
+  const [customPetsAtom] = useAtom(customPets);
+  const [petProfilesAtom] = useAtom(petProfiles);
   const [statsAtom, setStatsAtom] = useAtom(stats);
 
   const [messagesMap, setMessagesMap] = useState<Record<string, MessageType[]>>(() => {
@@ -31,11 +34,28 @@ export const ChatSection = () => {
         },
       ];
     });
+    Object.values(customPetsAtom).forEach((pet) => {
+      initial[pet.id] = [
+        {
+          id: 'initial-' + pet.id,
+          role: 'pet',
+          text: `Hi, I'm ${pet.name}. I'm happy to be here with you.`,
+          timestamp: Date.now(),
+        },
+      ];
+    });
     return initial;
   });
 
   const messages = useMemo(() => messagesMap[currentPetAtom] || [], [messagesMap, currentPetAtom]);
-  const pet = useMemo(() => PETS.get(currentPetAtom)!, [currentPetAtom]);
+  const isBuiltInPet = useMemo(() => isBuiltInPetId(currentPetAtom), [currentPetAtom]);
+  const pet = useMemo(
+    () => (isBuiltInPetId(currentPetAtom) ? PETS.get(currentPetAtom)! : getCustomPetAsPet(customPetsAtom, currentPetAtom)!),
+    [currentPetAtom, customPetsAtom],
+  );
+  const petProfile = useMemo(() => getPetProfile(petProfilesAtom, currentPetAtom), [currentPetAtom, petProfilesAtom]);
+  const displayName = useMemo(() => getPetDisplayName(pet, petProfile), [pet, petProfile]);
+  const customImageUrl = useMemo(() => (!isBuiltInPet && pet?.wakeup?.imageUrl ? pet.wakeup.imageUrl : ''), [isBuiltInPet, pet]);
   const canChat = useMemo(() => statsAtom.coins >= 50, [statsAtom]);
 
   const handleSendMessage = useCallback(
@@ -55,7 +75,7 @@ export const ChatSection = () => {
       setIsTyping(true);
 
       try {
-        const response = await petChatService.sendMessage(pet, text);
+        const response = await petChatService.sendMessage(pet, text, displayName);
         const petMsg: MessageType = {
           id: (Date.now() + 1).toString(),
           role: 'pet',
@@ -75,7 +95,7 @@ export const ChatSection = () => {
         }));
       }
     },
-    [pet],
+    [displayName, pet, setStatsAtom],
   );
 
   useEffect(() => {
@@ -104,7 +124,10 @@ export const ChatSection = () => {
         border-b border-blue-300 dark:border-zinc-700
         text-blue-800 dark:text-zinc-100'
       >
-        {pet?.wakeup?.imageType === 'rive' ? (
+        {customImageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={customImageUrl} alt={displayName} className='w-12 h-12 rounded-full border-2 border-white shadow-sm object-cover' />
+        ) : pet?.wakeup?.imageType === 'rive' ? (
           <Rive
             src={pet.wakeup.imageUrl}
             stateMachines={pet.wakeup.stateMachines}
@@ -116,7 +139,7 @@ export const ChatSection = () => {
         )}
 
         <div>
-          <h2 className='font-bold text-xl'>{pet.name}</h2>
+          <h2 className='font-bold text-xl'>{displayName}</h2>
           <p className='text-xs opacity-80'>{isTyping ? 'Thinking...' : 'Always happy to talk!'}</p>
         </div>
       </div>
@@ -164,7 +187,7 @@ export const ChatSection = () => {
         <input
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder={`Talk to ${pet.name}...`}
+          placeholder={`Talk to ${displayName}...`}
           onClick={() => {
             if (!canChat) {
               setShake(true);

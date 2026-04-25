@@ -10,6 +10,8 @@ declare module '*.riv' {
   export default src;
 }
 
+declare module '*.css';
+
 declare module '*.json' {
   const value: any;
   export default value;

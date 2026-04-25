@@ -1,11 +1,11 @@
 'use client';
 
 import { PET_ENUM } from '@/utils/enums/pet.enum';
-import { FeedbackType, StatisticsType } from '@/utils/types/pet.type';
+import { CustomPetsType, FeedbackType, PetIdType, PetProfilesType, StatisticsType } from '@/utils/types/pet.type';
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-export const currentPet = atomWithStorage<PET_ENUM>('currentPet', PET_ENUM.BLACK_CAT);
+export const currentPet = atomWithStorage<PetIdType>('currentPet', PET_ENUM.BLACK_CAT);
 
 export const isSleeping = atomWithStorage<boolean>('isSleeping', false);
 
@@ -15,5 +15,9 @@ export const stats = atomWithStorage<StatisticsType>('stats', {
   energy: 50,
   coins: 200,
 });
+
+export const petProfiles = atomWithStorage<PetProfilesType>('petProfiles', {});
+
+export const customPets = atomWithStorage<CustomPetsType>('customPets', {});
 
 export const feedbacks = atom<FeedbackType[]>([]);

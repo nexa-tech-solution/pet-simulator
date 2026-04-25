@@ -6,6 +6,7 @@ import { isLightMode } from '@/store/theme.store';
 import { useAtom } from 'jotai';
 import { Moon, Settings, Sun, X } from 'lucide-react';
 import { useState } from 'react';
+import { PetCustomizePanel } from './pet-customize/PetCustomizePanel';
 import { PetSelector } from './PetSelector';
 
 export const SettingModal = () => {
@@ -25,7 +26,10 @@ export const SettingModal = () => {
 
       {isOpen && (
         <div className='fixed inset-0 z-50 flex items-end md:justify-end bg-slate-900/20 backdrop-blur-sm' onClick={() => setIsOpen(false)}>
-          <div className='overflow-y-auto bg-white dark:bg-slate-800 w-full md:w-[50%] h-[60%] md:h-full rounded-t-2xl md:rounded-t-none md:rounded-l-2xl p-6 animate-[slideUp_0.4s_cubic-bezier(0.16,1,0.3,1)] md:animate-[slideInRight_0.4s_cubic-bezier(0.16,1,0.3,1)] shadow-2xl flex flex-col'>
+          <div
+            className='overflow-y-auto bg-white dark:bg-slate-800 w-full md:w-[50%] h-[70%] md:h-full rounded-t-2xl md:rounded-t-none md:rounded-l-2xl p-6 animate-[slideUp_0.4s_cubic-bezier(0.16,1,0.3,1)] md:animate-[slideInRight_0.4s_cubic-bezier(0.16,1,0.3,1)] shadow-2xl flex flex-col'
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className='flex justify-between items-center mb-8 px-2'>
               <div>
                 <h2 className='text-2xl font-black text-slate-800 dark:text-white'>Settings</h2>
@@ -42,6 +46,9 @@ export const SettingModal = () => {
             <div className='space-y-4'>
               {/* Pet Selection */}
               <PetSelector />
+
+              {/* Pet Customization */}
+              <PetCustomizePanel />
 
               {/* Dark Mode Toggle */}
               <div className='flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700 transition-colors'>

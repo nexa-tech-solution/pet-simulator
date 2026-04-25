@@ -1,7 +1,8 @@
 'use client';
 
-import { currentPet, feedbacks, isSleeping } from '@/store/pet.store';
+import { currentPet, customPets, feedbacks, isSleeping, petProfiles } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
+import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
 import { PetImageType } from '@/utils/types/pet.type';
 import { Stack } from '@mantine/core';
 import Rive from '@rive-app/react-canvas';
@@ -15,9 +16,21 @@ import { FloatingText } from './FloatingText';
 export default function PetSection() {
   const [currentPetAtom] = useAtom(currentPet);
   const [isSleepingAtom] = useAtom(isSleeping);
+  const [customPetsAtom] = useAtom(customPets);
+  const [petProfilesAtom] = useAtom(petProfiles);
   const [feedbackAtom, setFeedbackAtom] = useAtom(feedbacks);
 
-  const selectedPet = useMemo(() => PETS.get(currentPetAtom), [currentPetAtom]);
+  const isBuiltInPet = useMemo(() => isBuiltInPetId(currentPetAtom), [currentPetAtom]);
+  const selectedPet = useMemo(
+    () => (isBuiltInPetId(currentPetAtom) ? PETS.get(currentPetAtom) : getCustomPetAsPet(customPetsAtom, currentPetAtom)),
+    [currentPetAtom, customPetsAtom],
+  );
+  const selectedProfile = useMemo(() => getPetProfile(petProfilesAtom, currentPetAtom), [currentPetAtom, petProfilesAtom]);
+  const displayName = useMemo(() => (selectedPet ? getPetDisplayName(selectedPet, selectedProfile) : ''), [selectedPet, selectedProfile]);
+  const customImageUrl = useMemo(
+    () => (!isBuiltInPet && selectedPet?.wakeup?.imageUrl ? selectedPet.wakeup.imageUrl : ''),
+    [isBuiltInPet, selectedPet],
+  );
   const selectedImage = useMemo<PetImageType | null>(
     () => (isSleepingAtom ? (selectedPet?.sleep ?? null) : (selectedPet?.wakeup ?? null)),
     [isSleepingAtom, selectedPet],
@@ -30,7 +43,10 @@ export default function PetSection() {
 
   return (
     <Stack flex={1} align='center' justify='center' className='relative'>
-      {selectedImage?.imageType === 'rive' ? (
+      {customImageUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={customImageUrl} alt={displayName} className='w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh] object-contain' />
+      ) : selectedImage?.imageType === 'rive' ? (
         <Rive
           key={currentPetAtom}
           src={selectedImage?.imageUrl}
@@ -42,7 +58,7 @@ export default function PetSection() {
       ) : selectedImage?.imageType === 'image' ? (
         <Image
           src={selectedImage?.imageUrl}
-          alt={selectedPet?.name || ''}
+          alt={displayName}
           className='w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh] object-contain'
         />
       ) : null}

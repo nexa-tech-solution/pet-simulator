@@ -1,12 +1,14 @@
 'use client';
 
 import { AppChangeModeButton } from '@/components/app-button/AppChangeModeButton';
-import { currentPet, isSleeping, stats } from '@/store/pet.store';
+import { currentPet, customPets, isSleeping, petProfiles, stats } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
+import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
 import { Group, Stack } from '@mantine/core';
 import { useAtom } from 'jotai';
 import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import { SettingModal } from './SettingModal';
 
 type HeaderSectionProps = {
@@ -15,10 +17,18 @@ type HeaderSectionProps = {
 
 export const HeaderSection = ({ withBack }: HeaderSectionProps) => {
   const [currentPetAtom] = useAtom(currentPet);
+  const [customPetsAtom] = useAtom(customPets);
   const [isSleepingAtom] = useAtom(isSleeping);
+  const [petProfilesAtom] = useAtom(petProfiles);
   const [statsAtom] = useAtom(stats);
 
   const router = useRouter();
+  const selectedPet = useMemo(
+    () => (isBuiltInPetId(currentPetAtom) ? PETS.get(currentPetAtom) : getCustomPetAsPet(customPetsAtom, currentPetAtom)),
+    [currentPetAtom, customPetsAtom],
+  );
+  const selectedProfile = useMemo(() => getPetProfile(petProfilesAtom, currentPetAtom), [currentPetAtom, petProfilesAtom]);
+  const displayName = useMemo(() => (selectedPet ? getPetDisplayName(selectedPet, selectedProfile) : ''), [selectedPet, selectedProfile]);
 
   const handleBack = () => {
     router.back(); // fallback mặc định
@@ -40,7 +50,7 @@ export const HeaderSection = ({ withBack }: HeaderSectionProps) => {
             <h1
               className={`text-3xl font-black tracking-tighter transition-all duration-500 ${isSleepingAtom ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent drop-shadow-sm'}`}
             >
-              {PETS.get(currentPetAtom)?.name || ''}
+              {displayName}
             </h1>
             {/* <span className='bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded-lg shadow-sm border border-yellow-300 flex items-center gap-1'>
             <Star size={10} fill='currentColor' /> LV 5
