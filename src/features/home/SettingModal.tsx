@@ -14,6 +14,7 @@ export const SettingModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [lightMode] = useAtom(isLightMode);
   const [isSleepingAtom] = useAtom(isSleeping);
+  const closeSettings = () => setIsOpen(false);
 
   return (
     <>
@@ -25,7 +26,7 @@ export const SettingModal = () => {
       </button>
 
       {isOpen && (
-        <div className='fixed inset-0 z-50 flex items-end md:justify-end bg-slate-900/20 backdrop-blur-sm' onClick={() => setIsOpen(false)}>
+        <div className='fixed inset-0 z-50 flex items-end md:justify-end bg-slate-900/20 backdrop-blur-sm' onClick={closeSettings}>
           <div
             className='overflow-y-auto bg-white dark:bg-slate-800 w-full md:w-[50%] h-[70%] md:h-full rounded-t-2xl md:rounded-t-none md:rounded-l-2xl p-6 animate-[slideUp_0.4s_cubic-bezier(0.16,1,0.3,1)] md:animate-[slideInRight_0.4s_cubic-bezier(0.16,1,0.3,1)] shadow-2xl flex flex-col'
             onClick={(event) => event.stopPropagation()}
@@ -36,7 +37,7 @@ export const SettingModal = () => {
                 <p className='text-slate-500 text-md'>Customize your experience</p>
               </div>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={closeSettings}
                 className='p-2 cursor-pointer bg-slate-100 dark:bg-slate-700 rounded-full text-slate-500 hover:bg-slate-200'
               >
                 <X size={24} />
@@ -48,7 +49,7 @@ export const SettingModal = () => {
               <PetSelector />
 
               {/* Pet Customization */}
-              <PetCustomizePanel />
+              <PetCustomizePanel onCreateSuccess={closeSettings} />
 
               {/* Dark Mode Toggle */}
               <div className='flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700 transition-colors'>

@@ -18,9 +18,10 @@ import { ImageControls } from './ImageControls';
 type CreatePetFormProps = {
   setCurrentPet: (petId: PetIdType) => void;
   setCustomPets: (update: (prev: Record<string, CustomPetType>) => Record<string, CustomPetType>) => void;
+  onCreateSuccess?: () => void;
 };
 
-export const CreatePetForm = ({ setCurrentPet, setCustomPets }: CreatePetFormProps) => {
+export const CreatePetForm = ({ setCurrentPet, setCustomPets, onCreateSuccess }: CreatePetFormProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState('');
   const [personality, setPersonality] = useState('');
@@ -63,6 +64,7 @@ export const CreatePetForm = ({ setCurrentPet, setCustomPets }: CreatePetFormPro
     setPersonality('');
     setImageUrl('');
     setErrorText('');
+    onCreateSuccess?.();
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {

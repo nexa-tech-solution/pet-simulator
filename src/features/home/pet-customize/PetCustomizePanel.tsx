@@ -10,7 +10,11 @@ import { useMemo } from 'react';
 import { CreatePetForm } from './CreatePetForm';
 import { SelectedPetEditor } from './SelectedPetEditor';
 
-export const PetCustomizePanel = () => {
+type PetCustomizePanelProps = {
+  onCreateSuccess?: () => void;
+};
+
+export const PetCustomizePanel = ({ onCreateSuccess }: PetCustomizePanelProps) => {
   const [currentPetAtom, setCurrentPetAtom] = useAtom(currentPet);
   const [customPetsAtom, setCustomPetsAtom] = useAtom(customPets);
 
@@ -28,7 +32,7 @@ export const PetCustomizePanel = () => {
 
       {selectedPet && <SelectedPetEditor key={currentPetAtom} petId={currentPetAtom} selectedPet={selectedPet} />}
 
-      <CreatePetForm setCurrentPet={setCurrentPetAtom} setCustomPets={setCustomPetsAtom} />
+      <CreatePetForm setCurrentPet={setCurrentPetAtom} setCustomPets={setCustomPetsAtom} onCreateSuccess={onCreateSuccess} />
     </div>
   );
 };
