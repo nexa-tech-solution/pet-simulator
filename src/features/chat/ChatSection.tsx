@@ -11,16 +11,21 @@ import { MessageType } from '@/utils/types/message.type';
 import Rive from '@rive-app/react-canvas';
 import { useAtom } from 'jotai';
 import Lottie from 'lottie-react';
-import { Send } from 'lucide-react';
+import { Send, Trash2, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const ChatSection = () => {
   const t = useTranslations('chat');
+  const tCommon = useTranslations('common');
   const router = useAppRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentPetAtom] = useAtom(currentPet);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  // `isTyping` only drives the dots and stops at the first token, so it cannot
+  // gate input — a reply is still streaming after it flips false.
+  const [isSending, setIsSending] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [shake, setShake] = useState(false);
 
   const [customPetsAtom] = useAtom(customPets);
@@ -67,6 +72,7 @@ export const ChatSection = () => {
       }));
 
       setIsTyping(true);
+      setIsSending(true);
 
       const petMsgId = `${Date.now() + 1}-pet`;
 
@@ -96,6 +102,7 @@ export const ChatSection = () => {
         upsertPetMessage(response);
       } finally {
         setIsTyping(false);
+        setIsSending(false);
         setStatsAtom((prev) => ({
           ...prev,
           // Floor at 0 — an unguarded subtraction is how the balance reached -35.
@@ -128,6 +135,25 @@ export const ChatSection = () => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages, isTyping]);
 
+  // Deleting the key rather than storing [] keeps localStorage tidy; either way
+  // the greeting-seeding effect notices the empty transcript and restores the
+  // greeting.
+  const handleClearChat = () => {
+    setMessagesMap((prev) => {
+      const next = { ...prev };
+      delete next[currentPetAtom];
+      return next;
+    });
+    setIsConfirmOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isConfirmOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => e.key === 'Escape' && setIsConfirmOpen(false);
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isConfirmOpen]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Catches Enter-to-submit, which bypasses the disabled button entirely.
@@ -140,6 +166,52 @@ export const ChatSection = () => {
       setInputText('');
     }
   };
+
+  const confirmModal = isConfirmOpen && (
+    <div
+      className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm'
+      onClick={() => setIsConfirmOpen(false)}
+      role='dialog'
+      aria-modal='true'
+      aria-label={t('clearChatTitle')}
+    >
+      <div
+        className='w-full max-w-sm bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-2xl
+          animate-[slideUp_0.25s_cubic-bezier(0.16,1,0.3,1)] flex flex-col gap-4'
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className='flex items-start gap-3'>
+          <div className='p-3 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-300 shrink-0'>
+            <Trash2 size={22} />
+          </div>
+          <div className='min-w-0'>
+            <h3 className='font-black text-lg text-slate-800 dark:text-white'>{t('clearChatTitle')}</h3>
+            <p className='text-sm text-slate-500 dark:text-slate-400 mt-1'>{t('clearChatMessage', { name: displayName })}</p>
+          </div>
+        </div>
+
+        <div className='flex justify-end gap-2'>
+          <button
+            type='button'
+            onClick={() => setIsConfirmOpen(false)}
+            className='h-10 px-4 rounded-xl bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-white text-sm font-bold
+              flex items-center gap-2 hover:bg-slate-300 dark:hover:bg-slate-500 transition'
+          >
+            <X size={16} /> {tCommon('cancel')}
+          </button>
+          <button
+            type='button'
+            autoFocus
+            onClick={handleClearChat}
+            className='h-10 px-4 rounded-xl bg-red-500 text-white text-sm font-bold
+              flex items-center gap-2 hover:bg-red-600 transition'
+          >
+            <Trash2 size={16} /> {tCommon('delete')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div
@@ -169,10 +241,25 @@ export const ChatSection = () => {
           <Lottie animationData={pet?.wakeup?.imageUrl} className='w-12 h-12 rounded-full border-2 border-white shadow-sm' />
         )}
 
-        <div>
-          <h2 className='font-bold text-xl'>{displayName}</h2>
+        <div className='flex-1 min-w-0'>
+          <h2 className='font-bold text-xl truncate'>{displayName}</h2>
           <p className='text-xs opacity-80'>{isTyping ? t('thinking') : t('alwaysHappy')}</p>
         </div>
+
+        <button
+          type='button'
+          onClick={() => setIsConfirmOpen(true)}
+          disabled={isSending || messages.length === 0}
+          title={t('clearChat')}
+          aria-label={t('clearChat')}
+          className='w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm
+            bg-white/70 dark:bg-white/10 hover:bg-red-500 hover:text-white dark:hover:bg-red-500
+            text-blue-700 dark:text-zinc-100
+            disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white/70 disabled:hover:text-blue-700
+            transition active:scale-95'
+        >
+          <Trash2 size={18} />
+        </button>
       </div>
 
       {/* Messages */}
@@ -243,13 +330,15 @@ export const ChatSection = () => {
         />
         <button
           type='submit'
-          disabled={!canChat || !inputText.trim() || isTyping}
+          disabled={!canChat || !inputText.trim() || isSending}
           className='bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50
             text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition flex-shrink-0'
         >
           <Send size={20} />
         </button>
       </form>
+
+      {confirmModal}
     </div>
   );
 };
