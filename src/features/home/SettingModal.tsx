@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { AppChangeModeButton } from '@/components/app-button/AppChangeModeButton';
 import { isSleeping } from '@/store/pet.store';
 import { isLightMode } from '@/store/theme.store';
@@ -10,7 +11,7 @@ import { PetCustomizePanel } from './pet-customize/PetCustomizePanel';
 import { PetSelector } from './PetSelector';
 
 export const SettingModal = () => {
-  // STATE
+  const t = useTranslations('settings');
   const [isOpen, setIsOpen] = useState(false);
   const [lightMode] = useAtom(isLightMode);
   const [isSleepingAtom] = useAtom(isSleeping);
@@ -33,8 +34,8 @@ export const SettingModal = () => {
           >
             <div className='flex justify-between items-center mb-8 px-2'>
               <div>
-                <h2 className='text-2xl font-black text-slate-800 dark:text-white'>Settings</h2>
-                <p className='text-slate-500 text-md'>Customize your experience</p>
+                <h2 className='text-2xl font-black text-slate-800 dark:text-white'>{t('title')}</h2>
+                <p className='text-slate-500 text-md'>{t('customize')}</p>
               </div>
               <button
                 onClick={closeSettings}
@@ -63,8 +64,8 @@ export const SettingModal = () => {
                     {!lightMode ? <Moon size={24} /> : <Sun size={24} />}
                   </div>
                   <div className='flex flex-col'>
-                    <span className='font-bold text-slate-800 dark:text-white'>Theme</span>
-                    <span className='text-xs text-slate-400 font-medium'>{!lightMode ? 'Night Mode' : 'Day Mode'}</span>
+                    <span className='font-bold text-slate-800 dark:text-white'>{t('theme')}</span>
+                    <span className='text-xs text-slate-400 font-medium'>{!lightMode ? t('darkMode') : t('lightMode')}</span>
                   </div>
                 </div>
 

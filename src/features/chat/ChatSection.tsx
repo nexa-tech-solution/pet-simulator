@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { petChatService } from '@/services/geminiService';
 import { currentPet, customPets, petProfiles, stats } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
@@ -12,6 +13,7 @@ import { Send } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const ChatSection = () => {
+  const t = useTranslations('chat');
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentPetAtom] = useAtom(currentPet);
   const [inputText, setInputText] = useState('');
@@ -140,7 +142,7 @@ export const ChatSection = () => {
 
         <div>
           <h2 className='font-bold text-xl'>{displayName}</h2>
-          <p className='text-xs opacity-80'>{isTyping ? 'Thinking...' : 'Always happy to talk!'}</p>
+          <p className='text-xs opacity-80'>{isTyping ? t('thinking') : t('alwaysHappy')}</p>
         </div>
       </div>
 
@@ -178,7 +180,7 @@ export const ChatSection = () => {
     bg-yellow-100 dark:bg-yellow-900/30
     text-yellow-700 dark:text-yellow-300 text-center'
         >
-          You need at least 50 coins to chat with your pet 🪙
+          {t('needCoins', { coins: 50 })} 🪙
         </div>
       )}
 
@@ -187,7 +189,7 @@ export const ChatSection = () => {
         <input
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
-          placeholder={`Talk to ${displayName}...`}
+          placeholder={t('placeholder', { name: displayName })}
           onClick={() => {
             if (!canChat) {
               setShake(true);

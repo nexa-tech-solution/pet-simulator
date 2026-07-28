@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { AppActionButton } from '@/components/app-action-button/AppActionButton';
 import { feedbacks, isSleeping, stats } from '@/store/pet.store';
 import { useAtom } from 'jotai';
@@ -7,6 +8,7 @@ import { Gamepad2, MessageCircle, Moon, Sun, Utensils } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export const ActionButtonSection = () => {
+  const t = useTranslations('pets');
   const router = useRouter();
   // STORE
   const [isSleepingAtom, setIsSleepingAtom] = useAtom(isSleeping);
@@ -90,16 +92,16 @@ export const ActionButtonSection = () => {
         isFab={true}
         onClick={handleFeed}
         icon={Utensils}
-        label='Eat'
+        label={t('actions.feed')}
         color='text-orange-500 bg-orange-500'
         disabled={isSleepingAtom}
       />
-      <AppActionButton isFab={true} onClick={handlePlay} icon={Gamepad2} label='Play' color='text-pink-500 bg-pink-500' disabled={isSleepingAtom} />
+      <AppActionButton isFab={true} onClick={handlePlay} icon={Gamepad2} label={t('actions.play')} color='text-pink-500 bg-pink-500' disabled={isSleepingAtom} />
       <AppActionButton
         isFab={true}
         onClick={handleSleep}
         icon={isSleepingAtom ? Sun : Moon}
-        label={isSleepingAtom ? 'Wake' : 'Sleep'}
+        label={isSleepingAtom ? t('actions.wakeUp') : t('actions.sleep')}
         color='text-indigo-500 bg-indigo-500'
       />
       <AppActionButton
@@ -108,7 +110,7 @@ export const ActionButtonSection = () => {
           router.push('/chat');
         }}
         icon={MessageCircle}
-        label='Talk'
+        label={t('actions.talk')}
         color='text-blue-500 bg-blue-500'
         disabled={isSleepingAtom}
       />

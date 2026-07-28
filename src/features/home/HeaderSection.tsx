@@ -1,6 +1,7 @@
 'use client';
 
 import { AppChangeModeButton } from '@/components/app-button/AppChangeModeButton';
+import { LanguageSwitcher } from '@/components/app-button/LanguageSwitcher';
 import { currentPet, customPets, isSleeping, petProfiles, stats } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
@@ -68,6 +69,7 @@ export const HeaderSection = ({ withBack }: HeaderSectionProps) => {
 
         <Stack gap={4} align='flex-end'>
           <Group gap={2}>
+            <LanguageSwitcher />
             <SettingModal />
             <AppChangeModeButton />
           </Group>

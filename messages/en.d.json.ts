@@ -2,6 +2,124 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
-  "hello": "Hello"
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "search": "Search",
+    "noData": "No data available",
+    "success": "Success",
+    "failed": "Failed",
+    "retry": "Retry",
+    "yes": "Yes",
+    "no": "No",
+    "poweredBy": "Powered by {technology}"
+  },
+  "nav": {
+    "home": "Home",
+    "chat": "Chat",
+    "settings": "Settings"
+  },
+  "home": {
+    "welcome": "Welcome to Pet Simulator",
+    "createPet": "Create New Pet",
+    "selectPet": "Select Pet",
+    "noPets": "You don't have any pets yet",
+    "getStarted": "Get started by creating your first pet!",
+    "petCount": "You have {count} pet(s)",
+    "coins": "Coins",
+    "level": "Level",
+    "chooseCompanion": "Choose Companion"
+  },
+  "pets": {
+    "name": "Name",
+    "type": "Type",
+    "level": "Level",
+    "experience": "Experience",
+    "health": "Health",
+    "happiness": "Happiness",
+    "hunger": "Hunger",
+    "energy": "Energy",
+    "status": {
+      "sleeping": "Sleeping",
+      "awake": "Awake",
+      "hungry": "Hungry",
+      "happy": "Happy",
+      "sad": "Sad",
+      "tired": "Tired"
+    },
+    "actions": {
+      "feed": "Feed",
+      "play": "Play",
+      "sleep": "Sleep",
+      "wakeUp": "Wake Up",
+      "bath": "Bath",
+      "talk": "Talk"
+    },
+    "creation": {
+      "title": "Create New Pet",
+      "namePlaceholder": "Enter pet name",
+      "selectType": "Select pet type",
+      "creating": "Creating your pet..."
+    },
+    "delete": {
+      "title": "Delete Pet",
+      "message": "Are you sure you want to delete {name}? This action cannot be undone.",
+      "success": "Pet deleted successfully"
+    },
+    "types": {
+      "dog": "Dog",
+      "cat": "Cat",
+      "bird": "Bird",
+      "fish": "Fish",
+      "rabbit": "Rabbit"
+    }
+  },
+  "chat": {
+    "title": "Chat with Pet",
+    "placeholder": "Talk to {name}...",
+    "send": "Send",
+    "noMessages": "No messages yet",
+    "startConversation": "Start a conversation with your pet!",
+    "typing": "typing...",
+    "thinking": "Thinking...",
+    "alwaysHappy": "Always happy to talk!",
+    "needCoins": "You need at least {coins} coins to chat with your pet"
+  },
+  "settings": {
+    "title": "Settings",
+    "customize": "Customize your experience",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "sound": "Sound Effects",
+    "music": "Background Music",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "system": "System",
+    "enable": "Enable",
+    "disable": "Disable",
+    "about": "About",
+    "version": "Version"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "notFound": "Not found",
+    "unauthorized": "You are not authorized to perform this action.",
+    "validation": "Please check your input and try again.",
+    "serverError": "Server error. Please try again later.",
+    "petCreationFailed": "Failed to create pet. Please try again.",
+    "petDeletionFailed": "Failed to delete pet. Please try again.",
+    "saveFailed": "Failed to save. Please try again.",
+    "loadFailed": "Failed to load data. Please try again."
+  }
 };
 export default messages;

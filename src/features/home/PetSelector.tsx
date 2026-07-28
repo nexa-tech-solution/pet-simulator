@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { currentPet, customPets, petProfiles } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
@@ -11,6 +12,7 @@ import { Cat } from 'lucide-react';
 import { useMemo } from 'react';
 
 export const PetSelector = () => {
+  const t = useTranslations('home');
   const [currentPetAtom, setCurrentPetAtom] = useAtom(currentPet);
   const [customPetsAtom] = useAtom(customPets);
   const [petProfilesAtom] = useAtom(petProfiles);
@@ -36,7 +38,7 @@ export const PetSelector = () => {
   return (
     <div className='bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700 p-4'>
       <h3 className='font-bold text-slate-800 dark:text-white mb-3 flex items-center gap-2'>
-        <Cat size={18} className='text-indigo-500' /> Choose Companion
+        <Cat size={18} className='text-indigo-500' /> {t('chooseCompanion')}
       </h3>
       <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-2'>
         {pets?.map(([petId, pet]) => {

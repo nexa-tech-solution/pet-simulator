@@ -1,3 +1,121 @@
 {
-  "hello": "Xin chào"
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "create": "Tạo",
+    "close": "Đóng",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "loading": "Đang tải...",
+    "search": "Tìm kiếm",
+    "noData": "Không có dữ liệu",
+    "success": "Thành công",
+    "failed": "Thất bại",
+    "retry": "Thử lại",
+    "yes": "Có",
+    "no": "Không",
+    "poweredBy": "Công nghệ {technology}"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "chat": "Trò chuyện",
+    "settings": "Cài đặt"
+  },
+  "home": {
+    "welcome": "Chào mừng đến với Trò chơi Thú Cưng",
+    "createPet": "Tạo Thú Cưng Mới",
+    "selectPet": "Chọn Thú Cưng",
+    "noPets": "Bạn chưa có thú cưng nào",
+    "getStarted": "Bắt đầu bằng cách tạo thú cưng đầu tiên của bạn!",
+    "petCount": "Bạn có {count} thú cưng",
+    "coins": "Tiền",
+    "level": "Cấp",
+    "chooseCompanion": "Chọn Bạn Đồng Hành"
+  },
+  "pets": {
+    "name": "Tên",
+    "type": "Loài",
+    "level": "Cấp độ",
+    "experience": "Kinh nghiệm",
+    "health": "Sức khỏe",
+    "happiness": "Hạnh phúc",
+    "hunger": "Đói",
+    "energy": "Năng lượng",
+    "status": {
+      "sleeping": "Đang ngủ",
+      "awake": "Thức",
+      "hungry": "Đói bụng",
+      "happy": "Vui vẻ",
+      "sad": "Buồn",
+      "tired": "Mệt"
+    },
+    "actions": {
+      "feed": "Cho ăn",
+      "play": "Chơi",
+      "sleep": "Ngủ",
+      "wakeUp": "Đánh thức",
+      "bath": "Tắm",
+      "talk": "Nói chuyện"
+    },
+    "creation": {
+      "title": "Tạo Thú Cưng Mới",
+      "namePlaceholder": "Nhập tên thú cưng",
+      "selectType": "Chọn loại thú cưng",
+      "creating": "Đang tạo thú cưng của bạn..."
+    },
+    "delete": {
+      "title": "Xóa Thú Cưng",
+      "message": "Bạn có chắc muốn xóa {name}? Hành động này không thể hoàn tác.",
+      "success": "Đã xóa thú cưng thành công"
+    },
+    "types": {
+      "dog": "Chó",
+      "cat": "Mèo",
+      "bird": "Chim",
+      "fish": "Cá",
+      "rabbit": "Thỏ"
+    }
+  },
+  "chat": {
+    "title": "Trò chuyện với Thú Cưng",
+    "placeholder": "Nhắn tin cho {name}...",
+    "send": "Gửi",
+    "noMessages": "Chưa có tin nhắn",
+    "startConversation": "Bắt đầu cuộc trò chuyện với thú cưng của bạn!",
+    "typing": "đang nhập...",
+    "thinking": "Đang suy nghĩ...",
+    "alwaysHappy": "Luôn sẵn sàng trò chuyện!",
+    "needCoins": "Bạn cần ít nhất {coins} xu để trò chuyện với thú cưng"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "customize": "Tùy chỉnh trải nghiệm của bạn",
+    "language": "Ngôn ngữ",
+    "theme": "Giao diện",
+    "notifications": "Thông báo",
+    "sound": "Hiệu ứng âm thanh",
+    "music": "Nhạc nền",
+    "darkMode": "Chế độ tối",
+    "lightMode": "Chế độ sáng",
+    "system": "Hệ thống",
+    "enable": "Bật",
+    "disable": "Tắt",
+    "about": "Giới thiệu",
+    "version": "Phiên bản"
+  },
+  "errors": {
+    "generic": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "network": "Lỗi mạng. Vui lòng kiểm tra kết nối của bạn.",
+    "notFound": "Không tìm thấy",
+    "unauthorized": "Bạn không có quyền thực hiện hành động này.",
+    "validation": "Vui lòng kiểm tra thông tin nhập và thử lại.",
+    "serverError": "Lỗi máy chủ. Vui lòng thử lại sau.",
+    "petCreationFailed": "Tạo thú cưng thất bại. Vui lòng thử lại.",
+    "petDeletionFailed": "Xóa thú cưng thất bại. Vui lòng thử lại.",
+    "saveFailed": "Lưu thất bại. Vui lòng thử lại.",
+    "loadFailed": "Tải dữ liệu thất bại. Vui lòng thử lại."
+  }
 }
