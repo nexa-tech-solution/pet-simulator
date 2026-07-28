@@ -1,49 +1,42 @@
-import { SYSTEM_PROMPT } from '@/utils/constants/pet.constant';
+import { MessageType } from '@/utils/types/message.type';
 import { PetType } from '@/utils/types/pet.type';
-import { Chat, GoogleGenAI } from '@google/genai';
 
-const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
-
+/**
+ * Thin client for /api/chat. All model selection, provider fallback and API
+ * keys live on the server — nothing secret reaches the browser.
+ *
+ * The server route is stateless, so conversation history travels with each
+ * request. ChatSection already owns that history, which keeps a single source
+ * of truth instead of mirroring it here.
+ */
 class PetChatService {
-  private ai: GoogleGenAI;
-  private chats: Map<string, Chat> = new Map();
-
-  constructor() {
-    this.ai = new GoogleGenAI({ apiKey });
-  }
-
-  private getChat(pet: PetType, displayName: string): Chat {
-    const chatKey = `${pet.id}:${displayName}:${pet.personality ?? ''}`;
-
-    if (!this.chats.has(chatKey)) {
-      const nameInstruction = displayName !== pet.name ? `Your current name is ${displayName}. The user renamed you from ${pet.name}.` : '';
-      const chat = this.ai.chats.create({
-        // model: 'gemini-3-flash-preview',
-        //model: 'gemini-2.5-flash-lite',
-        model: 'gemini-flash-lite-latest',
-        config: {
-          systemInstruction: [pet.personality, nameInstruction, SYSTEM_PROMPT].filter(Boolean).join('\n'),
-          temperature: 0.8,
-        },
-      });
-      this.chats.set(chatKey, chat);
-    }
-    return this.chats.get(chatKey)!;
-  }
-
-  async sendMessage(pet: PetType, message: string, displayName = pet.name): Promise<string> {
+  async sendMessage(pet: PetType, message: string, displayName = pet.name, history: MessageType[] = []): Promise<string> {
     try {
-      const chat = this.getChat(pet, displayName);
-      const result = await chat.sendMessage({ message });
-      return result.text || "Sorry, I'm too busy chasing my tail right now!";
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          petName: pet.name,
+          displayName,
+          personality: pet.personality,
+          message,
+          history: history.map((m) => ({ role: m.role, text: m.text })),
+        }),
+      });
+
+      if (!response.ok) {
+        const detail = await response.json().catch(() => null);
+        console.error('Chat request failed:', response.status, detail);
+        return "Meow... (Translation: I'm having a little trouble thinking right now. Maybe try again later?)";
+      }
+
+      const data = await response.json();
+      console.log(`[chat] ${data.provider}/${data.model} →`, data.text);
+      return data.text || "Sorry, I'm too busy chasing my tail right now!";
     } catch (error) {
-      console.error('Error sending message to Gemini:', error);
+      console.error('Chat request failed:', error);
       return "Meow... (Translation: I'm having a little trouble thinking right now. Maybe try again later?)";
     }
-  }
-
-  resetChat(petId: string) {
-    this.chats.delete(petId);
   }
 }
 

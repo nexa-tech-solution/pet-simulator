@@ -77,7 +77,7 @@ export const ChatSection = () => {
       setIsTyping(true);
 
       try {
-        const response = await petChatService.sendMessage(pet, text, displayName);
+        const response = await petChatService.sendMessage(pet, text, displayName, messagesMap[pet.id] || []);
         const petMsg: MessageType = {
           id: (Date.now() + 1).toString(),
           role: 'pet',
@@ -97,7 +97,9 @@ export const ChatSection = () => {
         }));
       }
     },
-    [displayName, pet, setStatsAtom],
+    // messagesMap is read to send conversation history; without it here the
+    // closure goes stale and the pet loses track of the conversation.
+    [displayName, pet, setStatsAtom, messagesMap],
   );
 
   useEffect(() => {

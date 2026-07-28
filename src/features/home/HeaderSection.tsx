@@ -1,14 +1,14 @@
 'use client';
 
 import { AppChangeModeButton } from '@/components/app-button/AppChangeModeButton';
-import { LanguageSwitcher } from '@/components/app-button/LanguageSwitcher';
+// import { LanguageSwitcher } from '@/components/app-button/LanguageSwitcher';
 import { currentPet, customPets, isSleeping, petProfiles, stats } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
 import { Group, Stack } from '@mantine/core';
 import { useAtom } from 'jotai';
 import { ChevronLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useAppRouter } from '@/hooks/useAppRouter';
 import { useMemo } from 'react';
 import { SettingModal } from './SettingModal';
 
@@ -23,7 +23,7 @@ export const HeaderSection = ({ withBack }: HeaderSectionProps) => {
   const [petProfilesAtom] = useAtom(petProfiles);
   const [statsAtom] = useAtom(stats);
 
-  const router = useRouter();
+  const router = useAppRouter();
   const selectedPet = useMemo(
     () => (isBuiltInPetId(currentPetAtom) ? PETS.get(currentPetAtom) : getCustomPetAsPet(customPetsAtom, currentPetAtom)),
     [currentPetAtom, customPetsAtom],
@@ -69,7 +69,8 @@ export const HeaderSection = ({ withBack }: HeaderSectionProps) => {
 
         <Stack gap={4} align='flex-end'>
           <Group gap={2}>
-            <LanguageSwitcher />
+            {/* TODO: temporarily hidden — re-enable once `/vi` resolves the locale correctly */}
+            {/* <LanguageSwitcher /> */}
             <SettingModal />
             <AppChangeModeButton />
           </Group>

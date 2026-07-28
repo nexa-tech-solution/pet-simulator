@@ -1,17 +1,20 @@
 'use client';
 
-import { usePathname, useRouter } from '@/i18n/navigation';
+import { useAppRouter } from '@/hooks/useAppRouter';
+import { usePathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { Menu, Text } from '@mantine/core';
 import { useLocale } from 'next-intl';
 
 export const LanguageSwitcher = () => {
   const locale = useLocale();
-  const router = useRouter();
+  const router = useAppRouter();
   const pathname = usePathname();
 
   const handleLocaleChange = (newLocale: 'en' | 'vi') => {
-    router.push(pathname, { locale: newLocale });
+    // `pathname` is locale-stripped, so a locale switch looks like a same-URL
+    // navigation to the progress bar and would be skipped without this.
+    router.push(pathname, { locale: newLocale, disableSameURL: false });
   };
 
   const locales = routing.locales.map((loc) => ({

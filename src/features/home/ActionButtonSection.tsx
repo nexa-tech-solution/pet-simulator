@@ -5,11 +5,11 @@ import { AppActionButton } from '@/components/app-action-button/AppActionButton'
 import { feedbacks, isSleeping, stats } from '@/store/pet.store';
 import { useAtom } from 'jotai';
 import { Gamepad2, MessageCircle, Moon, Sun, Utensils } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useAppRouter } from '@/hooks/useAppRouter';
 
 export const ActionButtonSection = () => {
   const t = useTranslations('pets');
-  const router = useRouter();
+  const router = useAppRouter();
   // STORE
   const [isSleepingAtom, setIsSleepingAtom] = useAtom(isSleeping);
   const [statsAtom, setStatsAtom] = useAtom(stats);
@@ -96,7 +96,14 @@ export const ActionButtonSection = () => {
         color='text-orange-500 bg-orange-500'
         disabled={isSleepingAtom}
       />
-      <AppActionButton isFab={true} onClick={handlePlay} icon={Gamepad2} label={t('actions.play')} color='text-pink-500 bg-pink-500' disabled={isSleepingAtom} />
+      <AppActionButton
+        isFab={true}
+        onClick={handlePlay}
+        icon={Gamepad2}
+        label={t('actions.play')}
+        color='text-pink-500 bg-pink-500'
+        disabled={isSleepingAtom}
+      />
       <AppActionButton
         isFab={true}
         onClick={handleSleep}

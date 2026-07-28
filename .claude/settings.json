@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "find . -name '._*' -type f -delete 2>/dev/null || true",
+            "statusMessage": "Cleaning macOS ._* files"
+          }
+        ]
+      }
+    ]
+  }
+}
