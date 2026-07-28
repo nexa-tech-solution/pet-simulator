@@ -88,7 +88,9 @@
     "typing": "đang nhập...",
     "thinking": "Đang suy nghĩ...",
     "alwaysHappy": "Luôn sẵn sàng trò chuyện!",
-    "needCoins": "Bạn cần ít nhất {coins} xu để trò chuyện với thú cưng"
+    "needCoins": "Bạn cần ít nhất {coins} xu để trò chuyện với thú cưng",
+    "earnCoinsHint": "Cho ăn (+5), chơi (+10) hoặc cho {name} ngủ (+15) ở màn hình chính để kiếm xu.",
+    "goEarnCoins": "Đi kiếm xu"
   },
   "settings": {
     "title": "Cài đặt",

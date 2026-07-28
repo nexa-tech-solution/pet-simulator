@@ -2,6 +2,9 @@ import { PET_ENUM } from '../enums/pet.enum';
 import { PetType } from '../types/pet.type';
 import { IMAGES, LOTTIES, RIVES } from './images';
 
+/** Coins spent per chat message. Earned back by feeding (+5), playing (+10) and sleeping (+15). */
+export const CHAT_COST = 50;
+
 export const SYSTEM_PROMPT = `
 CORE RULES:
 

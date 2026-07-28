@@ -88,7 +88,9 @@
     "typing": "typing...",
     "thinking": "Thinking...",
     "alwaysHappy": "Always happy to talk!",
-    "needCoins": "You need at least {coins} coins to chat with your pet"
+    "needCoins": "You need at least {coins} coins to chat with your pet",
+    "earnCoinsHint": "Feed (+5), play (+10) or let {name} sleep (+15) on the home screen to earn coins.",
+    "goEarnCoins": "Go earn coins"
   },
   "settings": {
     "title": "Settings",

@@ -2,8 +2,10 @@
 
 import { useTranslations } from 'next-intl';
 import { petChatService } from '@/services/geminiService';
+import { capMessages, chatMessagesAtom } from '@/store/chat.store';
 import { currentPet, customPets, petProfiles, stats } from '@/store/pet.store';
-import { PETS } from '@/utils/constants/pet.constant';
+import { useAppRouter } from '@/hooks/useAppRouter';
+import { CHAT_COST, PETS } from '@/utils/constants/pet.constant';
 import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
 import { MessageType } from '@/utils/types/message.type';
 import Rive from '@rive-app/react-canvas';
@@ -14,6 +16,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export const ChatSection = () => {
   const t = useTranslations('chat');
+  const router = useAppRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [currentPetAtom] = useAtom(currentPet);
   const [inputText, setInputText] = useState('');
@@ -24,30 +27,7 @@ export const ChatSection = () => {
   const [petProfilesAtom] = useAtom(petProfiles);
   const [statsAtom, setStatsAtom] = useAtom(stats);
 
-  const [messagesMap, setMessagesMap] = useState<Record<string, MessageType[]>>(() => {
-    const initial: Record<string, MessageType[]> = {};
-    PETS.entries().forEach(([id, pet]) => {
-      initial[id] = [
-        {
-          id: 'initial-' + id,
-          role: 'pet',
-          text: pet.greeting || 'Hello!',
-          timestamp: Date.now(),
-        },
-      ];
-    });
-    Object.values(customPetsAtom).forEach((pet) => {
-      initial[pet.id] = [
-        {
-          id: 'initial-' + pet.id,
-          role: 'pet',
-          text: `Hi, I'm ${pet.name}. I'm happy to be here with you.`,
-          timestamp: Date.now(),
-        },
-      ];
-    });
-    return initial;
-  });
+  const [messagesMap, setMessagesMap] = useAtom(chatMessagesAtom);
 
   const messages = useMemo(() => messagesMap[currentPetAtom] || [], [messagesMap, currentPetAtom]);
   const isBuiltInPet = useMemo(() => isBuiltInPetId(currentPetAtom), [currentPetAtom]);
@@ -58,10 +38,22 @@ export const ChatSection = () => {
   const petProfile = useMemo(() => getPetProfile(petProfilesAtom, currentPetAtom), [currentPetAtom, petProfilesAtom]);
   const displayName = useMemo(() => getPetDisplayName(pet, petProfile), [pet, petProfile]);
   const customImageUrl = useMemo(() => (!isBuiltInPet && pet?.wakeup?.imageUrl ? pet.wakeup.imageUrl : ''), [isBuiltInPet, pet]);
-  const canChat = useMemo(() => statsAtom.coins >= 50, [statsAtom]);
+  const canChat = useMemo(() => statsAtom.coins >= CHAT_COST, [statsAtom]);
+
+  const rejectChat = useCallback(() => {
+    setShake(true);
+    setTimeout(() => setShake(false), 400);
+  }, []);
 
   const handleSendMessage = useCallback(
     async (text: string) => {
+      // Last line of defence: the button is disabled and handleSubmit checks
+      // too, but nothing may spend coins the player does not have.
+      if (statsAtom.coins < CHAT_COST) {
+        rejectChat();
+        return;
+      }
+
       const userMsg: MessageType = {
         id: Date.now().toString(),
         role: 'user',
@@ -71,36 +63,66 @@ export const ChatSection = () => {
 
       setMessagesMap((prev) => ({
         ...prev,
-        [pet.id]: [...(prev[pet.id] || []), userMsg],
+        [pet.id]: capMessages([...(prev[pet.id] || []), userMsg]),
       }));
 
       setIsTyping(true);
 
-      try {
-        const response = await petChatService.sendMessage(pet, text, displayName, messagesMap[pet.id] || []);
-        const petMsg: MessageType = {
-          id: (Date.now() + 1).toString(),
-          role: 'pet',
-          text: response,
-          timestamp: Date.now(),
-        };
+      const petMsgId = `${Date.now() + 1}-pet`;
 
-        setMessagesMap((prev) => ({
-          ...prev,
-          [pet.id]: [...(prev[pet.id] || []), petMsg],
-        }));
+      // Upserts the streaming bubble: appends it on the first token, then
+      // rewrites its text as more arrives.
+      const upsertPetMessage = (value: string) =>
+        setMessagesMap((prev) => {
+          const list = prev[pet.id] || [];
+          const last = list[list.length - 1];
+          const next: MessageType[] =
+            last?.id === petMsgId
+              ? // Already streaming: rewrite in place, so no re-trim is needed.
+                [...list.slice(0, -1), { ...last, text: value }]
+              : capMessages([...list, { id: petMsgId, role: 'pet', text: value, timestamp: Date.now() }]);
+          return { ...prev, [pet.id]: next };
+        });
+
+      try {
+        const response = await petChatService.sendMessage(pet, text, displayName, messagesMap[pet.id] || [], (partial) => {
+          // Text is on screen now, so the typing dots have done their job.
+          setIsTyping(false);
+          upsertPetMessage(partial);
+        });
+
+        // Nothing streamed (request failed before the first token) — show the
+        // fallback text the service returned.
+        upsertPetMessage(response);
       } finally {
         setIsTyping(false);
         setStatsAtom((prev) => ({
           ...prev,
-          coins: prev.coins - 50,
+          // Floor at 0 — an unguarded subtraction is how the balance reached -35.
+          coins: Math.max(0, prev.coins - CHAT_COST),
         }));
       }
     },
     // messagesMap is read to send conversation history; without it here the
     // closure goes stale and the pet loses track of the conversation.
-    [displayName, pet, setStatsAtom, messagesMap],
+    [displayName, pet, setStatsAtom, setMessagesMap, messagesMap, statsAtom.coins, rejectChat],
   );
+
+  // Seed the greeting lazily, per pet, only when that pet has no transcript.
+  // Depends on `messages` so it re-seeds if atomWithStorage hydrates an empty
+  // map in after the first render.
+  useEffect(() => {
+    if (messages.length) return;
+    const greeting = isBuiltInPet ? pet?.greeting : `Hi, I'm ${pet?.name}. I'm happy to be here with you.`;
+    setMessagesMap((prev) =>
+      prev[currentPetAtom]?.length
+        ? prev
+        : {
+            ...prev,
+            [currentPetAtom]: [{ id: `initial-${currentPetAtom}`, role: 'pet', text: greeting || 'Hello!', timestamp: Date.now() }],
+          },
+    );
+  }, [messages.length, currentPetAtom, isBuiltInPet, pet, setMessagesMap]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -108,6 +130,11 @@ export const ChatSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Catches Enter-to-submit, which bypasses the disabled button entirely.
+    if (!canChat) {
+      rejectChat();
+      return;
+    }
     if (inputText.trim()) {
       handleSendMessage(inputText.trim());
       setInputText('');
@@ -178,11 +205,22 @@ export const ChatSection = () => {
 
       {!canChat && (
         <div
-          className='mb-2 px-4 py-2 text-xs rounded-xl
+          className='mx-4 mb-2 px-4 py-3 rounded-xl
     bg-yellow-100 dark:bg-yellow-900/30
-    text-yellow-700 dark:text-yellow-300 text-center'
+    text-yellow-800 dark:text-yellow-300
+    flex flex-col items-center gap-2 text-center'
         >
-          {t('needCoins', { coins: 50 })} 🪙
+          <p className='text-xs font-semibold'>{t('needCoins', { coins: CHAT_COST })} 🪙</p>
+          <p className='text-[11px] opacity-90'>{t('earnCoinsHint', { name: displayName })}</p>
+          <button
+            type='button'
+            onClick={() => router.push('/')}
+            className='mt-0.5 px-4 py-1.5 rounded-full text-xs font-semibold
+              bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-600 dark:hover:bg-yellow-500
+              text-yellow-950 dark:text-white shadow-sm transition active:scale-95'
+          >
+            {t('goEarnCoins')} 🏠
+          </button>
         </div>
       )}
 
@@ -205,7 +243,7 @@ export const ChatSection = () => {
         />
         <button
           type='submit'
-          disabled={!inputText.trim() || isTyping}
+          disabled={!canChat || !inputText.trim() || isTyping}
           className='bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50
             text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md transition flex-shrink-0'
         >
