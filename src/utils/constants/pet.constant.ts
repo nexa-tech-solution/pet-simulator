@@ -36,8 +36,8 @@ export const PETS = new Map<PET_ENUM, PetType>([
         imageType: 'rive',
       },
       sleep: {
-        imageUrl: LOTTIES.GREY_CAT_SLEEP,
-        imageType: 'lottie',
+        imageUrl: IMAGES.MOCHI_SLEEP,
+        imageType: 'image',
       },
       description: 'A clumsy, innocent little black cat who is always curious about everything and often gets into silly trouble.',
       personality:
@@ -57,8 +57,8 @@ export const PETS = new Map<PET_ENUM, PetType>([
         imageType: 'rive',
       },
       sleep: {
-        imageUrl: LOTTIES.GREY_CAT_SLEEP,
-        imageType: 'lottie',
+        imageUrl: IMAGES.LUNA_SLEEP,
+        imageType: 'image',
       },
       description: 'A sassy but lovable calico cat who loves naps and treats.',
       personality:
@@ -97,8 +97,8 @@ export const PETS = new Map<PET_ENUM, PetType>([
         imageType: 'lottie',
       },
       sleep: {
-        imageUrl: LOTTIES.GENERAL_SLEEPING,
-        imageType: 'lottie',
+        imageUrl: IMAGES.PUMPKIN_SLEEP,
+        imageType: 'image',
       },
       description: 'A chubby orange cat who believes that moving is optional and sleeping is a full-time job.',
       personality:
@@ -117,7 +117,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
         imageType: 'lottie',
       },
       sleep: {
-        imageUrl: IMAGES.WHITE_PUPPY_SLEEP,
+        imageUrl: IMAGES.SNOWY_SLEEP,
         imageType: 'image',
       },
       description: 'A gentle little white puppy who is extremely polite, soft-spoken, and always wants to make you happy.',
@@ -157,8 +157,8 @@ export const PETS = new Map<PET_ENUM, PetType>([
         imageType: 'lottie',
       },
       sleep: {
-        imageUrl: LOTTIES.GREY_CAT_SLEEP,
-        imageType: 'lottie',
+        imageUrl: IMAGES.MOCHI_SLEEP,
+        imageType: 'image',
       },
       description: 'A legendary lazy cat who considers sleeping a life purpose and moving an unnecessary side quest.',
       personality:

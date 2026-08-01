@@ -35,6 +35,13 @@ export default function PetSection() {
     () => (isSleepingAtom ? (selectedPet?.sleep ?? null) : (selectedPet?.wakeup ?? null)),
     [isSleepingAtom, selectedPet],
   );
+  const petDisplayClass = useMemo(
+    () =>
+      isSleepingAtom
+        ? 'w-[60vw] h-[50vh] md:w-[56vw] md:h-[52vh] lg:w-[42vw] lg:h-[40vh] xl:w-[38vw] xl:h-[36vh]'
+        : 'w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh]',
+    [isSleepingAtom],
+  );
 
   // METHOD
   const removeFeedback = (id: number) => {
@@ -45,22 +52,13 @@ export default function PetSection() {
     <Stack flex={1} align='center' justify='center' className='relative'>
       {customImageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={customImageUrl} alt={displayName} className='w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh] object-contain' />
+        <img src={customImageUrl} alt={displayName} className={`${petDisplayClass} object-contain`} />
       ) : selectedImage?.imageType === 'rive' ? (
-        <Rive
-          key={currentPetAtom}
-          src={selectedImage?.imageUrl}
-          stateMachines={selectedImage?.stateMachines}
-          className='w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh]'
-        />
+        <Rive key={currentPetAtom} src={selectedImage?.imageUrl} stateMachines={selectedImage?.stateMachines} className={petDisplayClass} />
       ) : selectedImage?.imageType === 'lottie' ? (
-        <Lottie animationData={selectedImage?.imageUrl} loop={true} className='w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh]' />
+        <Lottie animationData={selectedImage?.imageUrl} loop={true} className={petDisplayClass} />
       ) : selectedImage?.imageType === 'image' ? (
-        <Image
-          src={selectedImage?.imageUrl}
-          alt={displayName}
-          className='w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh] object-contain'
-        />
+        <Image src={selectedImage?.imageUrl} alt={displayName} unoptimized className={`${petDisplayClass} object-contain`} />
       ) : null}
 
       <div className='absolute top-1/4 right-1/4 z-20'>

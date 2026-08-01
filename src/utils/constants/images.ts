@@ -1,8 +1,10 @@
-import HAPPY_DOG_SLEEP from '@/assets/images/happy-dog-sleep.png';
+import HAPPY_DOG_SLEEP from '@/assets/gif/buddy-sleep.gif';
+import LUNA_SLEEP from '@/assets/gif/luna-sleep.gif';
+import MOCHI_SLEEP from '@/assets/gif/mochi-sleep.gif';
+import PUMPKIN_SLEEP from '@/assets/gif/pumpkin-sleep.gif';
+import SNOWY_SLEEP from '@/assets/gif/snowy-sleep.gif';
 import SNOOPY_SLEEP from '@/assets/images/snoopy-sleep.png';
-import WHITE_PUPPY_SLEEP from '@/assets/images/white-puppy-sleep.png';
 import GENERAL_SLEEPING from '@/assets/lotties/general-sleeping.json';
-import GREY_CAT_SLEEP from '@/assets/lotties/grey-cat-sleep.json';
 import LAZY_CAT from '@/assets/lotties/lazy-cat.json';
 import ORANGE_CAT_SLEEPING from '@/assets/lotties/orange-cat-sleeping.json';
 import ORANGE_CAT from '@/assets/lotties/orange-cat.json';
@@ -20,13 +22,15 @@ export const LOTTIES = {
   WHITE_PUPPY,
   SNOOPY,
   LAZY_CAT,
-  GREY_CAT_SLEEP,
   ORANGE_CAT_SLEEPING,
   GENERAL_SLEEPING,
 };
 
 export const IMAGES = {
   HAPPY_DOG_SLEEP,
-  WHITE_PUPPY_SLEEP,
+  LUNA_SLEEP,
+  MOCHI_SLEEP,
+  PUMPKIN_SLEEP,
+  SNOWY_SLEEP,
   SNOOPY_SLEEP,
 };
