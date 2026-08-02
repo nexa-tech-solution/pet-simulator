@@ -5,7 +5,7 @@ import MOCHI_SLEEP from '@/assets/gif/mochi-sleep.gif';
 import PUMPKIN_SLEEP from '@/assets/gif/pumpkin-sleep.gif';
 import SNOOPY_SLEEP from '@/assets/gif/snoopy-sleep.gif';
 import SNOWY_SLEEP from '@/assets/gif/snowy-sleep.gif';
-import GIFT from '@/assets/gif/gift.gif';
+import GIFT from '@/assets/images/gift-static.png';
 import GENERAL_SLEEPING from '@/assets/lotties/general-sleeping.json';
 import LAZY_CAT from '@/assets/lotties/lazy-cat.json';
 import ORANGE_CAT_SLEEPING from '@/assets/lotties/orange-cat-sleeping.json';

@@ -1,6 +1,7 @@
 import { ActionButtonSection } from '@/features/home/ActionButtonSection';
 import { CloudSection } from '@/features/home/CloudSection';
 import { HeaderSection } from '@/features/home/HeaderSection';
+import { RewardGiftButton } from '@/features/home/RewardGiftButton';
 import PetSection from '@/features/home/PetSection';
 import { TrackingInfoSection } from '@/features/home/TrackingInfoSection';
 import { SITE_URL } from '@/utils/constants/meta.constant';
@@ -65,6 +66,7 @@ export default async function HomePage() {
       <HeaderSection />
       <PetSection />
       <ActionButtonSection />
+      <RewardGiftButton />
       <TrackingInfoSection />
     </div>
   );

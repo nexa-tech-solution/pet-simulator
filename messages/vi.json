@@ -36,7 +36,19 @@
     "chooseCompanion": "Chọn Bạn Đồng Hành",
     "watchAdForCoins": "Xem quảng cáo nhận {coins} xu",
     "adUnavailable": "Chưa có quảng cáo",
-    "adLimitReached": "Quay lại vào ngày mai"
+    "adLimitReached": "Quay lại vào ngày mai",
+    "reward": {
+      "title": "Cơ hội của bạn!",
+      "subtitle": "Xem một quảng cáo ngắn và bạn có thể nhận",
+      "watch": "Xem video",
+      "watchHint": "Xem hết quảng cáo để nhận thưởng!",
+      "loading": "Đang tải quảng cáo...",
+      "congrats": "Chúc mừng!",
+      "wonPrefix": "Bạn đã nhận được",
+      "wonAmount": "{coins} xu!",
+      "unavailable": "Chưa có quảng cáo",
+      "close": "Đóng"
+    }
   },
   "pets": {
     "name": "Tên",

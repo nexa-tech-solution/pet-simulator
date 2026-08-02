@@ -36,7 +36,19 @@
     "chooseCompanion": "Choose Companion",
     "watchAdForCoins": "Watch an ad for {coins} coins",
     "adUnavailable": "No ad right now",
-    "adLimitReached": "Come back tomorrow"
+    "adLimitReached": "Come back tomorrow",
+    "reward": {
+      "title": "Your Chance!",
+      "subtitle": "Watch a short video ad and you might win",
+      "watch": "Watch Video",
+      "watchHint": "Watch the ad to get your reward!",
+      "loading": "Loading ad...",
+      "congrats": "Congratulations!",
+      "wonPrefix": "You've won",
+      "wonAmount": "{coins} coins!",
+      "unavailable": "No ad right now",
+      "close": "Close"
+    }
   },
   "pets": {
     "name": "Name",
