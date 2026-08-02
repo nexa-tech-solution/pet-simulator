@@ -157,7 +157,7 @@ export const PETS = new Map<PET_ENUM, PetType>([
         imageType: 'lottie',
       },
       sleep: {
-        imageUrl: IMAGES.MOCHI_SLEEP,
+        imageUrl: IMAGES.MISO_SLEEP,
         imageType: 'image',
       },
       description: 'A legendary lazy cat who considers sleeping a life purpose and moving an unnecessary side quest.',
