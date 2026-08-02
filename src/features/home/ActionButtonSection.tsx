@@ -6,12 +6,14 @@ import { feedbacks, isSleeping, stats } from '@/store/pet.store';
 import { useAtom } from 'jotai';
 import { Gamepad2, MessageCircle, Moon, Sun, Utensils } from 'lucide-react';
 import { useAppRouter } from '@/hooks/useAppRouter';
+import { useNativeAd } from '@/hooks/useNativeAd';
 import { usePetSound } from '@/hooks/usePetSound';
 
 export const ActionButtonSection = () => {
   const t = useTranslations('pets');
   const router = useAppRouter();
   const { play } = usePetSound();
+  const { showAd } = useNativeAd();
   // STORE
   const [isSleepingAtom, setIsSleepingAtom] = useAtom(isSleeping);
   const [statsAtom, setStatsAtom] = useAtom(stats);
@@ -66,6 +68,7 @@ export const ActionButtonSection = () => {
     addFeedback(`${randomFood} +30`, 'orange', e);
     // addFeedback('+5 Coins', 'yellow', e);
     // petSpeak("Yummy! That's delicious!");
+    showAd('feed');
   };
 
   const handlePlay = (e: React.MouseEvent) => {
@@ -90,6 +93,7 @@ export const ActionButtonSection = () => {
 
     addFeedback(`${randomToy} +25`, 'pink', e);
     // petSpeak('This is so much fun!');
+    showAd('play');
   };
 
   return (
