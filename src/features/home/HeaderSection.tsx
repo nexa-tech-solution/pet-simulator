@@ -10,6 +10,7 @@ import { useAtom } from 'jotai';
 import { ChevronLeft } from 'lucide-react';
 import { useAppRouter } from '@/hooks/useAppRouter';
 import { useMemo } from 'react';
+import { RewardGiftButton } from './RewardGiftButton';
 import { SettingModal } from './SettingModal';
 
 type HeaderSectionProps = {
@@ -71,6 +72,7 @@ export const HeaderSection = ({ withBack }: HeaderSectionProps) => {
           <Group gap={2}>
             {/* TODO: temporarily hidden — re-enable once `/vi` resolves the locale correctly */}
             {/* <LanguageSwitcher /> */}
+            <RewardGiftButton />
             <SettingModal />
             <AppChangeModeButton />
           </Group>

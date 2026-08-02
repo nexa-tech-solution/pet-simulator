@@ -15,8 +15,14 @@ const BRIDGE_SOURCE = 'pet-simulator';
 /** Window event the shell dispatches once it knows whether an ad actually ran. */
 export const NATIVE_AD_EVENT = 'petshell:ad';
 
-/** Actions allowed to trigger a full-screen ad. */
-export type AdTriggerType = 'feed' | 'play';
+/**
+ * Actions allowed to trigger a full-screen ad.
+ *
+ * `feed` and `play` are unprompted; `reward` is the gift button, where the user asked for
+ * the ad in exchange for coins. The shell treats them identically and echoes the trigger
+ * back, so adding one here needs no change to the native app.
+ */
+export type AdTriggerType = 'feed' | 'play' | 'reward';
 
 /** Sent web -> native. */
 export type NativeAdRequestType = {

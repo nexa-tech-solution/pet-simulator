@@ -36,7 +36,10 @@ declare const messages: {
     "petCount": "You have {count} pet(s)",
     "coins": "Coins",
     "level": "Level",
-    "chooseCompanion": "Choose Companion"
+    "chooseCompanion": "Choose Companion",
+    "watchAdForCoins": "Watch an ad for {coins} coins",
+    "adUnavailable": "No ad right now",
+    "adLimitReached": "Come back tomorrow"
   },
   "pets": {
     "name": "Name",

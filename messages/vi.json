@@ -33,7 +33,10 @@
     "petCount": "Bạn có {count} thú cưng",
     "coins": "Tiền",
     "level": "Cấp",
-    "chooseCompanion": "Chọn Bạn Đồng Hành"
+    "chooseCompanion": "Chọn Bạn Đồng Hành",
+    "watchAdForCoins": "Xem quảng cáo nhận {coins} xu",
+    "adUnavailable": "Chưa có quảng cáo",
+    "adLimitReached": "Quay lại vào ngày mai"
   },
   "pets": {
     "name": "Tên",

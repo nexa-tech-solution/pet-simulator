@@ -1,21 +1,34 @@
 'use client';
 
+import { AdQuotaType } from '@/utils/helpers/ad-quota.helper';
 import { atomWithStorage } from 'jotai/utils';
 
-/** Full-screen ads a user may see per calendar day, counted across every trigger combined. */
+/** Unprompted ads (feed / play) per day. Deliberately low - the user did not ask for these. */
 export const DAILY_AD_LIMIT = 2;
 
-export type AdQuotaType = {
-  /** Local calendar day the count belongs to, as YYYY-MM-DD. Empty until the first ad runs. */
-  day: string;
-  count: number;
-};
+/**
+ * Opt-in reward ads per day, budgeted separately from {@link DAILY_AD_LIMIT}.
+ *
+ * Sharing one budget would mean two taps of Feed leave the gift button dead for the rest of
+ * the day, which is not how a button the user deliberately presses should behave. This cap
+ * exists to keep the coin economy and AdMob request volume sane, not to limit annoyance.
+ */
+export const DAILY_REWARD_LIMIT = 5;
+
+/** Coins paid out for watching a reward ad. */
+export const REWARD_COINS = 200;
 
 /**
- * `getOnInit` matters here. Without it the atom starts at the default and only syncs from
- * localStorage in a mount effect, so a tap in that window would read a full budget and
- * hand out an extra ad. Reading at init is SSR-safe: jotai's storage returns the default
- * when `window` is missing. Nothing derived from this atom is rendered, so there is no
+ * `getOnInit` matters here. Without it an atom starts at its default and only syncs from
+ * localStorage in a mount effect, so a tap in that window would read a full budget and hand
+ * out an extra ad. Reading at init is SSR-safe: jotai's storage returns the default when
+ * `window` is missing. Nothing derived from these atoms is server-rendered, so there is no
  * hydration mismatch to worry about.
  */
-export const adQuota = atomWithStorage<AdQuotaType>('adQuota', { day: '', count: 0 }, undefined, { getOnInit: true });
+const withInitialRead = { getOnInit: true };
+
+const emptyQuota: AdQuotaType = { day: '', count: 0 };
+
+export const adQuota = atomWithStorage<AdQuotaType>('adQuota', emptyQuota, undefined, withInitialRead);
+
+export const rewardQuota = atomWithStorage<AdQuotaType>('rewardQuota', emptyQuota, undefined, withInitialRead);
