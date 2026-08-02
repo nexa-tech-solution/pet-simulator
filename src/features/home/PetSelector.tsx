@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { usePetSound } from '@/hooks/usePetSound';
 import { currentPet, customPets, petProfiles } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
@@ -13,6 +14,7 @@ import { useMemo } from 'react';
 
 export const PetSelector = () => {
   const t = useTranslations('home');
+  const { play } = usePetSound();
   const [currentPetAtom, setCurrentPetAtom] = useAtom(currentPet);
   const [customPetsAtom] = useAtom(customPets);
   const [petProfilesAtom] = useAtom(petProfiles);
@@ -55,6 +57,8 @@ export const PetSelector = () => {
                 e.preventDefault();
                 e.stopPropagation();
                 setCurrentPetAtom(petId);
+                // Preview the pet being picked, not the one still in the store.
+                play(petId);
               }}
               className={`touch-pan-y cursor-pointer flex flex-col items-center justify-center p-2 rounded-xl border-2 transition-all ${currentPetAtom === petId ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300' : 'border-transparent bg-white dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400'}`}
             >

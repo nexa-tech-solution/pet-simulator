@@ -6,10 +6,12 @@ import { feedbacks, isSleeping, stats } from '@/store/pet.store';
 import { useAtom } from 'jotai';
 import { Gamepad2, MessageCircle, Moon, Sun, Utensils } from 'lucide-react';
 import { useAppRouter } from '@/hooks/useAppRouter';
+import { usePetSound } from '@/hooks/usePetSound';
 
 export const ActionButtonSection = () => {
   const t = useTranslations('pets');
   const router = useAppRouter();
+  const { play } = usePetSound();
   // STORE
   const [isSleepingAtom, setIsSleepingAtom] = useAtom(isSleeping);
   const [statsAtom, setStatsAtom] = useAtom(stats);
@@ -39,6 +41,8 @@ export const ActionButtonSection = () => {
       const randomSleep = sleepEmojis[Math.floor(Math.random() * sleepEmojis.length)];
       addFeedback(`${randomSleep} Goodnight`, 'indigo', e);
     } else {
+      // The pet greets you on waking. Going to sleep stays quiet on purpose.
+      play();
       const wakeEmojis = ['☀️', '✨', '💪', '😁'];
       const randomWake = wakeEmojis[Math.floor(Math.random() * wakeEmojis.length)];
       addFeedback(`${randomWake} Full`, 'yellow', e);
@@ -47,6 +51,7 @@ export const ActionButtonSection = () => {
 
   const handleFeed = (e: React.MouseEvent) => {
     if (isSleepingAtom) return;
+    play();
     setStatsAtom((prev) => ({
       ...prev,
       hunger: Math.min(100, prev.hunger + 30),
@@ -70,6 +75,7 @@ export const ActionButtonSection = () => {
       // petSpeak("I'm too sleepy to play...");
       return;
     }
+    play();
     setStatsAtom((prev) => ({
       ...prev,
       happiness: Math.min(100, prev.happiness + 25),

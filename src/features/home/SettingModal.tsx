@@ -9,6 +9,7 @@ import { Moon, Settings, Sun, X } from 'lucide-react';
 import { useState } from 'react';
 import { PetCustomizePanel } from './pet-customize/PetCustomizePanel';
 import { PetSelector } from './PetSelector';
+import { SoundSettings } from './SoundSettings';
 
 export const SettingModal = () => {
   const t = useTranslations('settings');
@@ -72,16 +73,8 @@ export const SettingModal = () => {
                 <AppChangeModeButton />
               </div>
 
-              {/* Placeholder for Audio */}
-              {/* <div className='flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700 opacity-70'>
-                <div className='flex items-center gap-3'>
-                  <div className='p-3 bg-pink-100 text-pink-600 dark:bg-pink-900 dark:text-pink-300 rounded-xl'>
-                    <Music size={24} />
-                  </div>
-                  <span className='font-bold text-slate-800 dark:text-white'>Sound Effects</span>
-                </div>
-                <div className='text-xs font-bold text-slate-400 uppercase'>Coming Soon</div>
-              </div> */}
+              {/* Sound Effects */}
+              <SoundSettings />
 
               {/* Placeholder for Notifications */}
               {/* <div className='flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700 opacity-70'>

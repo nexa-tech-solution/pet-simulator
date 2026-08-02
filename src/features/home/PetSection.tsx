@@ -1,5 +1,6 @@
 'use client';
 
+import { usePetSound } from '@/hooks/usePetSound';
 import { currentPet, customPets, feedbacks, isSleeping, petProfiles } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
@@ -19,6 +20,7 @@ export default function PetSection() {
   const [customPetsAtom] = useAtom(customPets);
   const [petProfilesAtom] = useAtom(petProfiles);
   const [feedbackAtom, setFeedbackAtom] = useAtom(feedbacks);
+  const { play } = usePetSound();
 
   const isBuiltInPet = useMemo(() => isBuiltInPetId(currentPetAtom), [currentPetAtom]);
   const selectedPet = useMemo(
@@ -50,16 +52,24 @@ export default function PetSection() {
 
   return (
     <Stack flex={1} align='center' justify='center' className='relative'>
-      {customImageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={customImageUrl} alt={displayName} className={`${petDisplayClass} object-contain`} />
-      ) : selectedImage?.imageType === 'rive' ? (
-        <Rive key={currentPetAtom} src={selectedImage?.imageUrl} stateMachines={selectedImage?.stateMachines} className={petDisplayClass} />
-      ) : selectedImage?.imageType === 'lottie' ? (
-        <Lottie animationData={selectedImage?.imageUrl} loop={true} className={petDisplayClass} />
-      ) : selectedImage?.imageType === 'image' ? (
-        <Image src={selectedImage?.imageUrl} alt={displayName} unoptimized className={`${petDisplayClass} object-contain`} />
-      ) : null}
+      {/* Tap the pet to hear it. onClick covers both pointer and keyboard activation. */}
+      <button
+        type='button'
+        aria-label={displayName}
+        onClick={() => play()}
+        className='cursor-pointer select-none border-0 bg-transparent p-0 transition-transform duration-200 active:scale-95'
+      >
+        {customImageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={customImageUrl} alt={displayName} className={`${petDisplayClass} object-contain`} draggable={false} />
+        ) : selectedImage?.imageType === 'rive' ? (
+          <Rive key={currentPetAtom} src={selectedImage?.imageUrl} stateMachines={selectedImage?.stateMachines} className={petDisplayClass} />
+        ) : selectedImage?.imageType === 'lottie' ? (
+          <Lottie animationData={selectedImage?.imageUrl} loop={true} className={petDisplayClass} />
+        ) : selectedImage?.imageType === 'image' ? (
+          <Image src={selectedImage?.imageUrl} alt={displayName} unoptimized className={`${petDisplayClass} object-contain`} draggable={false} />
+        ) : null}
+      </button>
 
       <div className='absolute top-1/4 right-1/4 z-20'>
         {!isSleepingAtom && <Heart className='text-pink-500 fill-pink-500 animate-bounce drop-shadow-lg' size={40} />}

@@ -13,6 +13,8 @@ export type PetType = {
   name: string;
   sleep?: PetImageType;
   wakeup?: PetImageType;
+  /** URL of this pet's voice clip, see `SOUNDS`. */
+  sound?: string;
   description?: string;
   personality?: string;
   greeting?: string;
