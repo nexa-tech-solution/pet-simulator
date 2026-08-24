@@ -24,6 +24,7 @@ const eslintConfig = [
       "i18nConfig.js",
       "middleware.js",
       "messages/*.d.json.ts",
+      "public/firebase-messaging-sw.js",
     ],
   },
 

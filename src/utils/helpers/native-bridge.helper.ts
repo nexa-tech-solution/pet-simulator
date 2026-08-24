@@ -18,11 +18,11 @@ export const NATIVE_AD_EVENT = 'petshell:ad';
 /**
  * Actions allowed to trigger a full-screen ad.
  *
- * `feed` and `play` are unprompted; `reward` is the gift button, where the user asked for
- * the ad in exchange for coins. The shell treats them identically and echoes the trigger
- * back, so adding one here needs no change to the native app.
+ * `feed` and `play` are unprompted; `reward` is the gift button, while `food` unlocks a
+ * premium meal after the user opts into a video. The shell echoes the trigger back, so the
+ * web can grant only the matching reward.
  */
-export type AdTriggerType = 'feed' | 'play' | 'reward';
+export type AdTriggerType = 'feed' | 'play' | 'reward' | 'food';
 
 /** Sent web -> native. */
 export type NativeAdRequestType = {

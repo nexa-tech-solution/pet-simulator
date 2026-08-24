@@ -20,4 +20,7 @@ export const petProfiles = atomWithStorage<PetProfilesType>('petProfiles', {});
 
 export const customPets = atomWithStorage<CustomPetsType>('customPets', {});
 
+/** Food IDs unlocked by the user, persisted locally for the progressive food menu. */
+export const unlockedFoodIds = atomWithStorage<string[]>('unlockedFoodIds', []);
+
 export const feedbacks = atom<FeedbackType[]>([]);

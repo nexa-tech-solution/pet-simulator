@@ -142,3 +142,46 @@ body {
     transform: translateX(0);
   }
 }
+
+@keyframes cardFlipIn {
+  0% {
+    opacity: 0;
+    transform: perspective(500px) rotateY(90deg) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(500px) rotateY(0) scale(1);
+  }
+}
+
+@keyframes bubbleRise {
+  0% {
+    transform: translateY(24px) translateX(0) scale(0.92);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-120px) translateX(8px) scale(1);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-275px) translateX(-5px) scale(1.05);
+    opacity: 0;
+  }
+}
+
+@keyframes shootDart {
+  0% {
+    transform: translateX(-50%) translateY(0) rotate(var(--shot-angle)) scale(0.75);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(-50% + var(--shot-x))) translateY(var(--shot-y)) rotate(var(--shot-angle)) scale(1.05);
+    opacity: 0;
+  }
+}
+

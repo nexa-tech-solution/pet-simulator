@@ -1,7 +1,8 @@
 'use client';
 
 import { usePetSound } from '@/hooks/usePetSound';
-import { currentPet, customPets, feedbacks, isSleeping, petProfiles } from '@/store/pet.store';
+import THOUGHT_CHAT_BUBBLE from '@/assets/images/thought-chat-bubble.png';
+import { currentPet, customPets, feedbacks, isSleeping, petProfiles, stats } from '@/store/pet.store';
 import { PETS } from '@/utils/constants/pet.constant';
 import { getCustomPetAsPet, getPetDisplayName, getPetProfile, isBuiltInPetId } from '@/utils/helpers/pet.helper';
 import { PetImageType } from '@/utils/types/pet.type';
@@ -9,7 +10,7 @@ import { Stack } from '@mantine/core';
 import Rive from '@rive-app/react-canvas';
 import { useAtom } from 'jotai';
 import Lottie from 'lottie-react';
-import { Heart } from 'lucide-react';
+import { Frown, Heart, MoonStar } from 'lucide-react';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { FloatingText } from './FloatingText';
@@ -19,6 +20,7 @@ export default function PetSection() {
   const [isSleepingAtom] = useAtom(isSleeping);
   const [customPetsAtom] = useAtom(customPets);
   const [petProfilesAtom] = useAtom(petProfiles);
+  const [statsAtom] = useAtom(stats);
   const [feedbackAtom, setFeedbackAtom] = useAtom(feedbacks);
   const { play } = usePetSound();
 
@@ -44,6 +46,8 @@ export default function PetSection() {
         : 'w-[60vw] h-[50vh] md:w-[60vw] md:h-[60vh] lg:w-[70vw] lg:h-[70vh]',
     [isSleepingAtom],
   );
+  const isHungry = (statsAtom?.hunger ?? 100) < 30;
+  const isSleepy = (statsAtom?.energy ?? 100) < 30;
 
   // METHOD
   const removeFeedback = (id: number) => {
@@ -70,6 +74,26 @@ export default function PetSection() {
           <Image src={selectedImage?.imageUrl} alt={displayName} unoptimized className={`${petDisplayClass} object-contain`} draggable={false} />
         ) : null}
       </button>
+
+      {(isHungry || isSleepy) && (
+        <div className='pointer-events-none absolute -left-3 top-[6%] z-30 h-[140px] w-[210px] sm:-left-3 sm:right-auto'>
+          <Image src={THOUGHT_CHAT_BUBBLE} alt='' fill unoptimized sizes='210px' className='object-contain grayscale brightness-110' />
+          <div
+            role='status'
+            aria-live='polite'
+            className='absolute left-5 right-7 top-[39px] z-10 flex items-center justify-center gap-1.5 text-xs font-black'
+          >
+            <span
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${isHungry ? 'bg-rose-50 text-rose-500' : 'bg-indigo-50 text-indigo-500'}`}
+            >
+              {isHungry ? <Frown size={16} strokeWidth={2.5} /> : <MoonStar size={16} strokeWidth={2.5} />}
+            </span>
+            <span className={isHungry ? 'text-rose-500' : 'text-indigo-500'}>
+              {isHungry && isSleepy ? 'I’m hungry and sleepy!' : isHungry ? 'I’m hungry!' : 'I’m so sleepy…'}
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className='absolute top-1/4 right-1/4 z-20'>
         {!isSleepingAtom && <Heart className='text-pink-500 fill-pink-500 animate-bounce drop-shadow-lg' size={40} />}
@@ -99,3 +123,6 @@ export default function PetSection() {
     </Stack>
   );
 }
+
+
+
