@@ -74,8 +74,8 @@ export const BubbleGame = ({ onWin }: { onWin: () => void }) => {
   const [isBoosted, setIsBoosted] = useState(false);
   const [shot, setShot] = useState<{ id: number; x: number; y: number; angle: number } | null>(null);
   const fieldRef = useRef<HTMLDivElement | null>(null);
-  const speedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const shotTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const speedTimerRef = useRef<number | null>(null);
+  const shotTimerRef = useRef<number | null>(null);
   const targetColor: BubbleColor = 'pink';
   const target = bubbleColors[targetColor];
   const targetCount = bubbleLayout.filter((bubble) => bubble.color === targetColor && !bubble.bomb).length;

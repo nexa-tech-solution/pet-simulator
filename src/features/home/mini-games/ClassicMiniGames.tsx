@@ -157,8 +157,8 @@ export const CupsGame = ({ onWin }: { onWin: () => void }) => {
   const [round, setRound] = useState(0);
   const [message, setMessage] = useState('Remember the pink ball!');
   useEffect(() => {
-    let shuffleTimer: ReturnType<typeof setInterval> | null = null;
-    let chooseTimer: ReturnType<typeof setTimeout> | null = null;
+    let shuffleTimer: number | null = null;
+    let chooseTimer: number | null = null;
     const revealTimer = window.setTimeout(() => {
       setPhase('shuffling');
       setMessage('Watch the cups closely…');

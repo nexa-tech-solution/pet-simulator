@@ -34,7 +34,7 @@ export const ActionButtonSection = () => {
   const isCheckingAdRef = useRef(false);
   const pendingFoodRef = useRef<PetFood | null>(null);
   const gameQueueRef = useRef<GameKind[]>([]);
-  const lastDequeuedGameRef = useRef<GameKind>();
+  const lastDequeuedGameRef = useRef<GameKind | null>(null);
 
   // METHOD
 
@@ -274,4 +274,3 @@ export const ActionButtonSection = () => {
     </>
   );
 };
-
