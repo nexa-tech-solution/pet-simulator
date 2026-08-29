@@ -3,8 +3,14 @@
 import { AdQuotaType } from '@/utils/helpers/ad-quota.helper';
 import { atomWithStorage } from 'jotai/utils';
 
-/** Unprompted ads (feed / play) per day. Deliberately low - the user did not ask for these. */
-export const DAILY_AD_LIMIT = 2;
+/**
+ * Unprompted ads (feed / play) per day.
+ *
+ * One. The user tapped Play to play, not to watch an ad, so this is the most that can be
+ * taken before the interruption stops being a fair trade - every tap after the first opens
+ * the game straight away.
+ */
+export const DAILY_AD_LIMIT = 1;
 
 /**
  * Opt-in reward ads per day, budgeted separately from {@link DAILY_AD_LIMIT}.

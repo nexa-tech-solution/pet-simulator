@@ -6,6 +6,7 @@ import { currentPet, feedbacks, isSleeping, stats, unlockedFoodIds } from '@/sto
 import { useAtom } from 'jotai';
 import { Gamepad2, MessageCircle, Moon, Sun, Utensils } from 'lucide-react';
 import { useAppRouter } from '@/hooks/useAppRouter';
+import { useNativeAd } from '@/hooks/useNativeAd';
 import { usePetSound } from '@/hooks/usePetSound';
 import { GameKind, MINI_GAME_KINDS, PlayMiniGameModal } from './PlayMiniGameModal';
 import { FoodPickerSheet, PetFood } from './FoodPickerSheet';
@@ -18,6 +19,9 @@ export const ActionButtonSection = () => {
   const t = useTranslations('pets');
   const router = useAppRouter();
   const { play } = usePetSound();
+  // Mounting this is what enforces the cap: it owns the daily budget for ads the user did
+  // not ask for, and spends a slot only when one is confirmed to have played.
+  const { remaining: unpromptedAdsLeft } = useNativeAd();
   // STORE
   const [isSleepingAtom, setIsSleepingAtom] = useAtom(isSleeping);
   const [statsAtom, setStatsAtom] = useAtom(stats);
@@ -194,7 +198,9 @@ export const ActionButtonSection = () => {
       // petSpeak("I'm too sleepy to play...");
       return;
     }
-    if (!isNativeShell()) {
+    // Past the daily budget the game opens immediately - an ad on every tap is the fastest
+    // way to make the Play button something the user learns to dread.
+    if (!isNativeShell() || unpromptedAdsLeft === 0) {
       openGame();
       return;
     }
