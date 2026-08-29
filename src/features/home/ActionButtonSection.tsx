@@ -198,14 +198,14 @@ export const ActionButtonSection = () => {
       }
       if (!isCheckingAdRef.current || detail?.trigger !== 'play') return;
       if (playAdTimeout.current) clearTimeout(playAdTimeout.current);
-      isCheckingAdRef.current = false;
-      setIsCheckingAd(false);
-      if (detail.type === 'ad:shown') awardPlay();
-      else openGame();
+
+      // The ad is the toll, not the prize: whether or not one ran, the tap the user made
+      // was on Play, so the game opens either way. Coins come from winning it.
+      openGame();
     };
     window.addEventListener(NATIVE_AD_EVENT, handleAdEvent);
     return () => window.removeEventListener(NATIVE_AD_EVENT, handleAdEvent);
-  }, [awardPlay, openGame, setUnlockedFoodIdsAtom]);
+  }, [openGame, setUnlockedFoodIdsAtom]);
 
   useEffect(
     () => () => {
