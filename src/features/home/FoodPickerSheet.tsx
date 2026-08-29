@@ -238,7 +238,10 @@ type FoodPickerSheetProps = {
   petId: PetIdType;
   petName: string;
   unlockedFoodIds: string[];
-  isUnlocking?: boolean;
+  /** The dish currently waiting on its ad, if any. */
+  unlockingFoodId?: string | null;
+  /** Explains an unlock that did not happen; nothing is shown when null. */
+  notice?: string | null;
   onClose: () => void;
   onChooseFood: (food: PetFood) => void;
   onUnlockFood: (food: PetFood) => void;
@@ -262,7 +265,16 @@ const FoodArtwork = ({ food }: { food: PetFood }) => {
   );
 };
 
-export const FoodPickerSheet = ({ petId, petName, unlockedFoodIds, isUnlocking, onClose, onChooseFood, onUnlockFood }: FoodPickerSheetProps) => {
+export const FoodPickerSheet = ({
+  petId,
+  petName,
+  unlockedFoodIds,
+  unlockingFoodId,
+  notice,
+  onClose,
+  onChooseFood,
+  onUnlockFood,
+}: FoodPickerSheetProps) => {
   const foods = getFoodsForPet(petId);
   const [selectedFoodId, setSelectedFoodId] = useState(foods[0]?.id);
   const [activeCategory, setActiveCategory] = useState<MenuCategory>('food');
@@ -314,36 +326,37 @@ export const FoodPickerSheet = ({ petId, petName, unlockedFoodIds, isUnlocking, 
           })}
         </div>
 
+        {notice && (
+          <p role='status' className='mb-3 rounded-xl bg-amber-50 px-3 py-2 text-center text-[11px] font-bold leading-snug text-amber-900'>
+            {notice}
+          </p>
+        )}
+
         <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
           {visibleFoods.map(({ food, index }) => {
             const requiresUnlock = index >= UNLOCK_START_INDEX;
             const isUnlocked = !requiresUnlock || unlockedFoodIds.includes(food.id);
-            const canUnlock =
-              !isUnlocked && foods.slice(UNLOCK_START_INDEX, index).every((previousFood) => unlockedFoodIds.includes(previousFood.id));
-            const isBusy = Boolean(isUnlocking && canUnlock);
-            const isWaitingForPrevious = !isUnlocked && !canUnlock;
+            // Every locked dish stands on its own: one ad, that dish. Requiring the earlier
+            // ones first left all but the first card inert, which read as a broken button.
+            const isBusy = unlockingFoodId === food.id;
+            // One ad at a time - the rest wait rather than queueing up requests.
+            const isBlockedByOtherUnlock = !isUnlocked && Boolean(unlockingFoodId) && !isBusy;
             const isSelected = selectedFoodId === food.id;
 
             return (
               <button
                 type='button'
                 key={food.id}
-                aria-label={
-                  isUnlocked
-                    ? `Feed ${food.name} to ${petName}`
-                    : canUnlock
-                      ? `Unlock ${food.name} with a video ad`
-                      : `Unlock an earlier food before ${food.name}`
-                }
-                disabled={isBusy || isWaitingForPrevious}
+                aria-label={isUnlocked ? `Feed ${food.name} to ${petName}` : `Unlock ${food.name} with a video ad`}
+                disabled={isBusy || isBlockedByOtherUnlock}
                 onClick={() => {
                   setSelectedFoodId(food.id);
                   if (isUnlocked) onChooseFood(food);
-                  else if (canUnlock) onUnlockFood(food);
+                  else onUnlockFood(food);
                 }}
                 className={`relative aspect-square cursor-pointer overflow-hidden rounded-[14px] border-2 transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 active:scale-[0.96] disabled:cursor-wait ${
                   !isUnlocked
-                    ? `border-amber-300 bg-amber-50 text-amber-800 shadow-[0_5px_14px_rgba(180,83,9,0.12)] ${canUnlock ? 'hover:bg-amber-100' : 'cursor-not-allowed opacity-75'}`
+                    ? `border-amber-300 bg-amber-50 text-amber-800 shadow-[0_5px_14px_rgba(180,83,9,0.12)] ${isBlockedByOtherUnlock ? 'cursor-not-allowed opacity-75' : 'hover:bg-amber-100'}`
                     : isSelected
                       ? 'border-indigo-500 bg-indigo-50 text-indigo-600 shadow-none'
                       : 'border-transparent bg-white text-slate-400 shadow-[0_5px_14px_rgba(15,23,42,0.06)] hover:bg-slate-100'

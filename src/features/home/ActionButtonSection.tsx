@@ -15,6 +15,15 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { PETS } from '@/utils/constants/pet.constant';
 import { PET_ENUM } from '@/utils/enums/pet.enum';
 
+/**
+ * Shown when the unlock ad does not run. Silence was the old behaviour, and it reads as a
+ * dead button - the user tapped 'Watch to unlock' and nothing whatsoever happened.
+ */
+const NO_AD_NOTICE = 'No video available right now. Please try again in a moment.';
+
+/** Matches the shell's own worst case: it can spend a few seconds finding an ad to show. */
+const FOOD_AD_TIMEOUT_MS = 10_000;
+
 export const ActionButtonSection = () => {
   const t = useTranslations('pets');
   const router = useAppRouter();
@@ -32,7 +41,10 @@ export const ActionButtonSection = () => {
   const [activeGame, setActiveGame] = useState<GameKind>();
   const [isCheckingAd, setIsCheckingAd] = useState(false);
   const [isFoodPickerOpen, setIsFoodPickerOpen] = useState(false);
-  const [isUnlockingFood, setIsUnlockingFood] = useState(false);
+  // The dish whose ad is running, not a plain boolean: any locked dish can be unlocked on
+  // its own now, so the sheet has to know which card to spin.
+  const [unlockingFoodId, setUnlockingFoodId] = useState<string | null>(null);
+  const [unlockNotice, setUnlockNotice] = useState<string | null>(null);
   const playAdTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const foodAdTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isCheckingAdRef = useRef(false);
@@ -77,6 +89,7 @@ export const ActionButtonSection = () => {
 
   const handleFeed = () => {
     if (isSleepingAtom) return;
+    setUnlockNotice(null);
     setIsFoodPickerOpen(true);
   };
 
@@ -97,25 +110,32 @@ export const ActionButtonSection = () => {
 
   const unlockFood = useCallback(
     (food: PetFood) => {
-      if (isUnlockingFood) return;
+      if (unlockingFoodId) return;
+      setUnlockNotice(null);
+
+      // Served as a plain website there is no ad to watch, so the dish is simply given.
       if (!isNativeShell()) {
         setUnlockedFoodIdsAtom((previous) => (previous.includes(food.id) ? previous : [...previous, food.id]));
         return;
       }
 
       pendingFoodRef.current = food;
-      setIsUnlockingFood(true);
+      setUnlockingFoodId(food.id);
+
       if (!requestNativeAd('food')) {
-        setIsUnlockingFood(false);
+        pendingFoodRef.current = null;
+        setUnlockingFoodId(null);
+        setUnlockNotice(NO_AD_NOTICE);
         return;
       }
 
       foodAdTimeout.current = setTimeout(() => {
         pendingFoodRef.current = null;
-        setIsUnlockingFood(false);
-      }, 10_000);
+        setUnlockingFoodId(null);
+        setUnlockNotice(NO_AD_NOTICE);
+      }, FOOD_AD_TIMEOUT_MS);
     },
-    [isUnlockingFood, setUnlockedFoodIdsAtom],
+    [setUnlockedFoodIdsAtom, unlockingFoodId],
   );
 
   const awardPlay = useCallback(
@@ -165,10 +185,14 @@ export const ActionButtonSection = () => {
         if (foodAdTimeout.current) clearTimeout(foodAdTimeout.current);
         const food = pendingFoodRef.current;
         pendingFoodRef.current = null;
-        setIsUnlockingFood(false);
+        setUnlockingFoodId(null);
 
+        // The dish is paid for by a confirmed impression, so an ad that never ran leaves it
+        // locked - and says so, rather than letting the tap vanish.
         if (detail.type === 'ad:shown') {
           setUnlockedFoodIdsAtom((previous) => (previous.includes(food.id) ? previous : [...previous, food.id]));
+        } else {
+          setUnlockNotice(NO_AD_NOTICE);
         }
         return;
       }
@@ -271,7 +295,8 @@ export const ActionButtonSection = () => {
           petId={currentPetAtom}
           petName={PETS.get(currentPetAtom as PET_ENUM)?.name ?? 'your pet'}
           unlockedFoodIds={unlockedFoodIdsAtom}
-          isUnlocking={isUnlockingFood}
+          unlockingFoodId={unlockingFoodId}
+          notice={unlockNotice}
           onClose={() => setIsFoodPickerOpen(false)}
           onChooseFood={feedPet}
           onUnlockFood={unlockFood}
