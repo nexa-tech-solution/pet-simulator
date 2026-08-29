@@ -120,9 +120,28 @@ body {
   }
 }
 
-/* Safe area utility */
+/*
+ * Safe area.
+ *
+ * The native shell draws this page edge to edge so its background reaches the status bar,
+ * and overwrites these variables on <html> with the real device insets. The `env()` values
+ * below are the fallback for the plain website, where nothing injects anything - they need
+ * `viewport-fit=cover`, set in the root layout, to be anything but zero.
+ */
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+/* Clears the notch, keeping the normal spacing on devices that have no inset. */
+.pt-safe-top {
+  padding-top: calc(var(--safe-area-top) + 1rem);
+}
+
 .pb-safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 20px);
+  padding-bottom: max(20px, var(--safe-area-bottom));
 }
 
 @keyframes shake {

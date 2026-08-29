@@ -36,7 +36,7 @@ export const HeaderSection = ({ withBack }: HeaderSectionProps) => {
   };
 
   return (
-    <Stack className='px-4 py-4'>
+    <Stack className='px-4 pb-4 pt-safe-top'>
       <Group align='center' justify='space-between'>
         <Group gap={10} align='center'>
           {withBack && (

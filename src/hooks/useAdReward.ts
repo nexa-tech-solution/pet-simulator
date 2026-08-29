@@ -11,6 +11,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * Releases the flow if the shell never answers. It always replies today, but a throw inside
  * its message handler would strand the modal spinning, and the shell ships as a built binary
  * that the web cannot patch.
+ *
+ * Comfortably above the shell's own worst case: it waits out a load already in flight and
+ * then the presentation itself before it can honestly say whether an ad ran, which is why
+ * `pending` can sit for a few seconds on the first tap after launch.
  */
 const REPLY_TIMEOUT_MS = 10_000;
 

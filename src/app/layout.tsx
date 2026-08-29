@@ -1,5 +1,6 @@
 import AppMetaDataProvider from '@/providers/AppMetaDataProvider';
 import { ProgressBarProvider } from '@/providers/ProgressBarProvider';
+import { Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -12,6 +13,18 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
 });
+
+/**
+ * `viewportFit: 'cover'` lets the background run under the notch and home indicator, which
+ * is what makes `env(safe-area-inset-*)` report anything at all. Content pads itself off
+ * those insets via the `--safe-area-*` variables in globals.css - the native shell
+ * overwrites them with the values it measures, since Android's WebView leaves `env()` empty.
+ */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
 
 // export const metadata: Metadata = {
 //   title: 'Create Next App',
