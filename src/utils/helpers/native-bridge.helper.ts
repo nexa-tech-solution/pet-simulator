@@ -18,11 +18,14 @@ export const NATIVE_AD_EVENT = 'petshell:ad';
 /**
  * Actions allowed to trigger a full-screen ad.
  *
- * `feed` and `play` are unprompted; `reward` is the gift button, while `food` unlocks a
- * premium meal after the user opts into a video. The shell echoes the trigger back, so the
- * web can grant only the matching reward.
+ * `play` is the only unprompted one, and it is capped at once a day. `reward` is the gift
+ * button, while `food` unlocks a premium meal - both opt-in, the user having tapped a
+ * control that says an ad is coming. Feed, Sleep and Chat are absent on purpose: they are
+ * the plain, everyday taps, and an ad on those is what makes an app tiring to use.
+ *
+ * The shell echoes the trigger back, so the web can grant only the matching reward.
  */
-export type AdTriggerType = 'feed' | 'play' | 'reward' | 'food';
+export type AdTriggerType = 'play' | 'reward' | 'food';
 
 /** Sent web -> native. */
 export type NativeAdRequestType = {
